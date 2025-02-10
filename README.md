@@ -6,11 +6,11 @@ A Python Script for running RSS feeds locally in a non-distracting environment. 
    - git clone https://github.com/Willhargrave/News-Reader.git
    - cd News-Reader
 2. Create a Virtual Environment (Recommended)
-   - # Mac/Linux
+   - Mac/Linux
       python3 -m venv venv
       source venv/bin/activate
 
-   - # Windows
+   - Windows
        python -m venv venv
        venv\Scripts\activate
 
