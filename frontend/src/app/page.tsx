@@ -1,32 +1,47 @@
-// pages/index.tsx
+"use client"
 import { useState, FormEvent } from 'react';
 import Head from 'next/head';
-import feeds from '../../../feeds.json';
+import feedsData from '../data/feeds.json';
+
+type Feed = {
+  title: string;
+  link: string;
+};
+
+type Article = {
+  feedTitle: string;
+  headline: string;
+  content: string;
+  link: string;
+};
 
 export default function Home() {
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
-  const [newsHtml, setNewsHtml] = useState<string>('');
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
 
-  
-  const handleCheckboxChange = (feedLink: string, checked: boolean) => {
-    if (checked) {
-      setSelectedFeeds((prev) => [...prev, feedLink]);
-    } else {
-      setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
-    }
+  const handleCheckboxChange = (link: string, checked: boolean) => {
+    setSelectedFeeds(prev =>
+      checked ? [...prev, link] : prev.filter(l => l !== link)
+    );
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setNewsHtml(
-      `<p>Simulated news content for feeds: ${selectedFeeds.join(', ')}</p>` +
-      `<p class="article-link"><a href="#">Read more</a></p><hr>`
-    );
+    setLoading(true);
+    const res = await fetch('/api/fetch-news', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selectedFeeds }),
+    });
+    const data = await res.json();
+    setArticles(data.articles || []);
+    setLoading(false);
   };
 
   const toggleLinks = () => {
-    setLinksVisible((prev) => !prev);
+    setLinksVisible(!linksVisible);
   };
 
   return (
@@ -37,14 +52,13 @@ export default function Home() {
       <div className="min-h-screen p-8 font-sans">
         <h1 className="text-3xl mb-6">News Summarizer</h1>
         <form onSubmit={handleSubmit}>
-          <details className="mb-6 cursor-pointer">
+          <details className="mb-4 cursor-pointer">
             <summary className="font-bold">Select News Feeds</summary>
-            <div className="mt-4">
-              {feeds.map((feed) => (
+            <div className="mt-2">
+              {(feedsData as Feed[]).map(feed => (
                 <label key={feed.link} className="block mb-2">
                   <input
                     type="checkbox"
-                    name="feeds"
                     value={feed.link}
                     onChange={(e) =>
                       handleCheckboxChange(feed.link, e.target.checked)
@@ -56,12 +70,13 @@ export default function Home() {
               ))}
             </div>
           </details>
-          <div className="flex space-x-4 mb-6">
+          <div className="flex space-x-4 mb-4">
             <button
               type="submit"
               className="px-4 py-2 bg-blue-500 text-white rounded"
+              disabled={loading}
             >
-              Show Top News Stories
+              {loading ? 'Loading...' : 'Show Top News Stories'}
             </button>
             <button
               type="button"
@@ -72,23 +87,29 @@ export default function Home() {
             </button>
           </div>
         </form>
-        <div className="news">
+        <div>
           <h2 className="text-2xl mb-4">Top News Stories</h2>
-          {/* Render the news HTML */}
-          <div
-            className={`prose ${linksVisible ? 'block' : 'hidden'}`}
-            dangerouslySetInnerHTML={{ __html: newsHtml }}
-          />
-          {/* If links are toggled off, remove the .article-link content.
-              In a real app, your API would handle this formatting. */}
-          {!linksVisible && (
-            <div
-              className="prose"
-              dangerouslySetInnerHTML={{
-                __html: newsHtml.replace(/<p class="article-link">.*?<\/p>/g, '')
-              }}
-            />
-          )}
+          {articles.map((article, index) => (
+            <div key={index} className="mb-6">
+              <h3 className="text-xl font-bold">
+                {article.feedTitle}: {article.headline}
+              </h3>
+              <p>{article.content}</p>
+              {linksVisible && (
+                <p className="mt-2">
+                  <a
+                    href={article.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    Read more
+                  </a>
+                </p>
+              )}
+              <hr className="mt-4 border-t border-gray-300" />
+            </div>
+          ))}
         </div>
       </div>
     </>
