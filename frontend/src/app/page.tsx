@@ -49,14 +49,18 @@ export default function Home() {
       <Head>
         <title>News Summarizer</title>
       </Head>
-      <div className="min-h-screen p-8 font-sans">
-        <h1 className="text-3xl mb-6">News Summarizer</h1>
+      
+      <div className="m-8 font-sans text-base">
+        
+        <h1 className="text-xl font-bold mb-4">News Summarizer</h1>
+        
         <form onSubmit={handleSubmit}>
+          
           <details className="mb-4 cursor-pointer">
             <summary className="font-bold">Select News Feeds</summary>
             <div className="mt-2">
-              {(feedsData as Feed[]).map(feed => (
-                <label key={feed.link} className="block mb-2">
+              {feedsData.map((feed: Feed) => (
+                <label key={feed.link} className="block mb-1">
                   <input
                     type="checkbox"
                     value={feed.link}
@@ -70,31 +74,35 @@ export default function Home() {
               ))}
             </div>
           </details>
-          <div className="flex space-x-4 mb-4">
+          
+          <div className="mb-4">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded"
               disabled={loading}
+              className="inline-block px-4 py-2 mr-2 border border-gray-500 text-sm hover:bg-gray-100"
             >
               {loading ? 'Loading...' : 'Show Top News Stories'}
             </button>
             <button
               type="button"
               onClick={toggleLinks}
-              className="px-4 py-2 bg-gray-500 text-white rounded"
+              className="inline-block px-4 py-2 border border-gray-500 text-sm hover:bg-gray-100"
             >
               Toggle Links
             </button>
           </div>
         </form>
-        <div>
-          <h2 className="text-2xl mb-4">Top News Stories</h2>
+
+        <div className="news mt-6">
+          <h2 className="font-bold mb-3">Top News Stories</h2>
+          
           {articles.map((article, index) => (
-            <div key={index} className="mb-6">
-              <h3 className="text-xl font-bold">
+            <div key={index} className="mb-5">
+              <h3 className="font-bold text-base">
                 {article.feedTitle}: {article.headline}
               </h3>
               <p>{article.content}</p>
+              
               {linksVisible && (
                 <p className="mt-2">
                   <a
@@ -107,6 +115,7 @@ export default function Home() {
                   </a>
                 </p>
               )}
+              
               <hr className="mt-4 border-t border-gray-300" />
             </div>
           ))}
