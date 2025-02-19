@@ -1,25 +1,37 @@
-import { NextResponse } from "next/server";
-import { users } from "../auth/[...nextauth]/route";
-import { v4 as uuidv4 } from "uuid";
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import { hash } from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
     if (!username || !password) {
-      return NextResponse.json({ error: "Missing credentials" }, { status: 400 });
+      return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
     }
 
-    const existingUser = users.find((u) => u.username === username);
+    const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
-      return NextResponse.json({ error: "Username already exists" }, { status: 400 });
+      return NextResponse.json({ error: 'Username already exists' }, { status: 400 });
     }
 
-    const newUser = { id: uuidv4(), username, password };
-    users.push(newUser);
+    const hashedPassword = await hash(password, 10);
 
-    return NextResponse.json({ message: "User registered successfully" });
+    const newUser = await prisma.user.create({
+      data: {
+        id: uuidv4(),
+        username,
+        password: hashedPassword,
+        feeds: [],
+      },
+    });
+
+    return NextResponse.json(
+      { message: 'User registered successfully', user: { id: newUser.id, username: newUser.username } },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Registration error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error('Registration error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
