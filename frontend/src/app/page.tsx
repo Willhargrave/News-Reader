@@ -2,6 +2,7 @@
 import { useState, FormEvent } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 import feedsData from '../data/feeds.json';
 
 type Feed = {
@@ -17,10 +18,12 @@ type Article = {
 };
 
 export default function Home() {
+  const { data: session } = useSession();
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
+  
 
   const handleCheckboxChange = (link: string, checked: boolean) => {
     setSelectedFeeds(prev =>
@@ -51,20 +54,33 @@ export default function Home() {
         <title>News Summarizer</title>
       </Head>
 
-      <div className="flex space-x-4 mb-6">
-          <Link
-            href="/login"
-            className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-          >
-            Register
-          </Link>
-        </div>
+      {!session ? (
+          <div className="flex space-x-4 mb-6">
+            <Link
+              href="/login"
+              className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+            >
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+            >
+              Register
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-4 mb-6">
+            <p className="text-sm">Welcome, {session.user?.name || 'User'}!</p>
+            <button
+              onClick={() => signOut()}
+              className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+
       
       <div className="m-8 font-sans text-base">
         
