@@ -36,18 +36,6 @@
       "link": "http://feeds.foxnews.com/foxnews/latest"
     },
     {
-      "title": "HuffPost",
-      "link": "https://www.huffpost.com/section/front-page/feed"
-    },
-    {
-      "title": "Politico",
-      "link": "https://www.politico.com/rss/politics08.xml"
-    },
-    {
-      "title": "TechCrunch",
-      "link": "http://feeds.feedburner.com/TechCrunch/"
-    },
-    {
       "title": "Wired",
       "link": "https://www.wired.com/feed/rss"
     },
@@ -64,20 +52,8 @@
       "link": "https://gizmodo.com/rss"
     },
     {
-      "title": "The Verge",
-      "link": "https://www.theverge.com/rss/index.xml"
-    },
-    {
-      "title": "Lifehacker",
-      "link": "https://lifehacker.com/rss"
-    },
-    {
       "title": "New Yorker",
       "link": "https://www.newyorker.com/feed/news"
-    },
-    {
-      "title": "Slate",
-      "link": "https://slate.com/feed"
     },
     {
       "title": "Time",
