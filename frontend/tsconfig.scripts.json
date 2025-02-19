@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
+      "resolveJsonModule": true,
+      "allowJs": true
+    },
+    "include": ["scripts/**/*.ts", "src/lib/**/*.ts"]
+  }
+  
