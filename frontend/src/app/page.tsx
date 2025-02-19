@@ -1,6 +1,7 @@
 "use client"
 import { useState, FormEvent } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import feedsData from '../data/feeds.json';
 
 type Feed = {
@@ -49,6 +50,21 @@ export default function Home() {
       <Head>
         <title>News Summarizer</title>
       </Head>
+
+      <div className="flex space-x-4 mb-6">
+          <Link
+            href="/login"
+            className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+          >
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+          >
+            Register
+          </Link>
+        </div>
       
       <div className="m-8 font-sans text-base">
         
