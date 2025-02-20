@@ -14,13 +14,11 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'No feed provided' }, { status: 400 });
   }
 
-  // Retrieve user
   const user = await prisma.user.findUnique({ where: { username: session.user.name } });
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  // Get the current removedFeeds array (as a string array)
   const removedFeeds: string[] = user.removedFeeds as string[] || [];
   if (!removedFeeds.includes(feedId)) {
     removedFeeds.push(feedId);
