@@ -1,6 +1,6 @@
 import { FormEvent, Dispatch, SetStateAction } from "react";
 import { useSession } from "next-auth/react";
-import feedsData from "../data/feeds.json";
+
 
 type Feed = {
   id?: string;
@@ -16,15 +16,18 @@ export type Article = {
 };
 
 type FeedFormProps = {
-  selectedFeeds: string[];
-  setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
-  setArticles: Dispatch<SetStateAction<Article[]>>;
-  setLoading: Dispatch<SetStateAction<boolean>>;
-  toggleLinks: () => void;
-  loading: boolean;
-};
-
+    availableFeeds: Feed[]; 
+    setAvailableFeeds: Dispatch<SetStateAction<Feed[]>>;
+    selectedFeeds: string[];
+    setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
+    setArticles: Dispatch<SetStateAction<Article[]>>;
+    setLoading: Dispatch<SetStateAction<boolean>>;
+    toggleLinks: () => void;
+    loading: boolean;
+  };
 export default function FeedForm({
+  availableFeeds,
+  setAvailableFeeds,
   selectedFeeds,
   setSelectedFeeds,
   setArticles,
@@ -32,6 +35,7 @@ export default function FeedForm({
   toggleLinks,
   loading,
 }: FeedFormProps) {
+
   const {data: session} = useSession();
   const handleCheckboxChange = (link: string, checked: boolean) => {
     setSelectedFeeds((prev) =>
@@ -39,15 +43,21 @@ export default function FeedForm({
     );
   };
 
-  const handleRemove = async (feed: Feed) => {
-    if (!feed.id) return; 
+
+  
+  const handleRemoveFeed = async (feedId: string, feedLink: string) => {
     const res = await fetch("/api/user-feeds", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedId: feed.id }),
+      body: JSON.stringify({ feedId }),
     });
     if (res.ok) {
-      setSelectedFeeds((prev) => prev.filter((link) => link !== feed.link));
+      // Optionally remove from selectedFeeds if it's there.
+      const response = await fetch("/api/fetch-feeds");
+      const data = await response.json();
+      setAvailableFeeds(data.feeds || []);
+      setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
+      // You might also update availableFeeds if needed.
     } else {
       const data = await res.json();
       console.error("Error removing feed:", data.error);
@@ -72,7 +82,7 @@ export default function FeedForm({
       <details className="mb-4 cursor-pointer">
         <summary className="font-bold">Select News Feeds</summary>
         <div className="mt-2">
-          {(feedsData as Feed[]).map((feed) => (
+          {availableFeeds.map((feed) => (
             <div key={feed.link} className="flex items-center space-x-2 mb-1">
               <input
                 type="checkbox"
@@ -87,7 +97,7 @@ export default function FeedForm({
               {session && feed.id && (
                 <button
                   type="button"
-                  onClick={() => handleRemove(feed)}
+                  onClick={() => handleRemoveFeed(feed.id!, feed.link)}
                   className="text-red-500 text-sm ml-2"
                 >
                   Remove
