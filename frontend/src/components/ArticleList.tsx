@@ -1,5 +1,3 @@
-"use client";
-
 type Article = {
   feedTitle: string;
   headline: string;

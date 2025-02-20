@@ -1,18 +1,25 @@
-"use client";
-
-import { FormEvent } from "react";
+import { FormEvent, Dispatch, SetStateAction } from "react";
+import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 
 type Feed = {
+  id?: string;
   title: string;
+  link: string;
+};
+
+export type Article = {
+  feedTitle: string;
+  headline: string;
+  content: string;
   link: string;
 };
 
 type FeedFormProps = {
   selectedFeeds: string[];
-  setSelectedFeeds: (feeds: string[]) => void;
-  setArticles: (articles: any[]) => void;
-  setLoading: (loading: boolean) => void;
+  setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
+  setArticles: Dispatch<SetStateAction<Article[]>>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
   toggleLinks: () => void;
   loading: boolean;
 };
@@ -25,10 +32,26 @@ export default function FeedForm({
   toggleLinks,
   loading,
 }: FeedFormProps) {
+  const {data: session} = useSession();
   const handleCheckboxChange = (link: string, checked: boolean) => {
     setSelectedFeeds((prev) =>
       checked ? [...prev, link] : prev.filter((l) => l !== link)
     );
+  };
+
+  const handleRemove = async (feed: Feed) => {
+    if (!feed.id) return; 
+    const res = await fetch("/api/user-feeds", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ feedId: feed.id }),
+    });
+    if (res.ok) {
+      setSelectedFeeds((prev) => prev.filter((link) => link !== feed.link));
+    } else {
+      const data = await res.json();
+      console.error("Error removing feed:", data.error);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -61,6 +84,15 @@ export default function FeedForm({
                 className="mr-2"
               />
               <span>{feed.title}</span>
+              {session && feed.id && (
+                <button
+                  type="button"
+                  onClick={() => handleRemove(feed)}
+                  className="text-red-500 text-sm ml-2"
+                >
+                  Remove
+                </button>
+              )}
             </div>
           ))}
         </div>
