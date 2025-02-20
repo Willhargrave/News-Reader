@@ -2,9 +2,9 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { useSession} from "next-auth/react";
 import feedsData from "../data/feeds.json";
+import Header from "@/components/Header";
 
 type Feed = {
   id?: string; // present when loaded from DB
@@ -27,33 +27,28 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
 
-  // Load feeds based on login status. 
-  // For both logged in and logged out, start with no feeds selected.
+
   useEffect(() => {
     if (session) {
-      // For logged in users, fetch from the DB.
       fetch("/api/fetch-feeds")
         .then((res) => res.json())
         .then((data) => {
           setAvailableFeeds(data.feeds || []);
-          setSelectedFeeds([]); // default: none selected
+          setSelectedFeeds([]);
         })
         .catch((err) => console.error(err));
     } else {
-      // For unlogged in users, use the static JSON.
       setAvailableFeeds(feedsData);
-      setSelectedFeeds([]); // default: none selected
+      setSelectedFeeds([]); 
     }
   }, [session]);
 
-  // When a checkbox changes, update the selected feeds state.
   const handleCheckboxChange = (link: string, checked: boolean) => {
     setSelectedFeeds((prev) =>
       checked ? [...prev, link] : prev.filter((l) => l !== link)
     );
   };
 
-  // Submit selected feeds to fetch news.
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -67,12 +62,10 @@ export default function Home() {
     setLoading(false);
   };
 
-  // Toggle "Read more" links.
   const toggleLinks = () => {
     setLinksVisible(!linksVisible);
   };
 
-  // For logged in users: remove a feed from their personal defaults.
   const handleRemoveFeed = async (feedId: string, feedLink: string) => {
     const res = await fetch("/api/user-feeds", {
       method: "DELETE",
@@ -98,40 +91,7 @@ export default function Home() {
         <title>Just The News</title>
       </Head>
       <div className="min-h-screen p-8 font-sans">
-        <header className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Just The News</h1>
-          <div>
-            {!session ? (
-              <div className="flex space-x-4">
-                <Link
-                  href="/login"
-                  className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-                >
-                  Register
-                </Link>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-4">
-                <p className="text-sm">
-                  Welcome, {session.user?.name || "User"}!
-                </p>
-                <button
-                  onClick={() => signOut()}
-                  className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </header>
-
+       <Header />
         <form onSubmit={handleSubmit}>
           <details className="mb-4 cursor-pointer">
             <summary className="font-bold">Select News Feeds</summary>
