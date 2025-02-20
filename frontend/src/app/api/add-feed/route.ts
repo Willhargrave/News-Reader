@@ -1,0 +1,23 @@
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import Parser from "rss-parser";
+
+const parser = new Parser();
+
+export async function POST(request: Request) {
+  try {
+    const { link, title: customTitle } = await request.json();
+    if (!link) {
+      return NextResponse.json({ error: "Feed link is required" }, { status: 400 });
+    }
+    const feed = await parser.parseURL(link);
+    const title = customTitle || feed.title || "Untitled Feed";
+    const newFeed = await prisma.feed.create({
+      data: { title, link },
+    });
+    return NextResponse.json({ message: "Feed added successfully", feed: newFeed }, { status: 201 });
+  } catch (error) {
+    console.error("Error adding feed:", error);
+    return NextResponse.json({ error: "Error adding feed" }, { status: 500 });
+  }
+}

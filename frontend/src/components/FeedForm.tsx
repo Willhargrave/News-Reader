@@ -1,5 +1,6 @@
-import { FormEvent, Dispatch, SetStateAction } from "react";
+import { FormEvent, Dispatch, SetStateAction, useState } from "react";
 import { useSession } from "next-auth/react";
+import AddFeedForm from "./AddFeedForm";
 
 
 type Feed = {
@@ -35,9 +36,10 @@ export default function FeedForm({
   toggleLinks,
   loading,
 }: FeedFormProps) {
-
+  const [showAddFeedForm, setShowAddFeedForm] = useState(false);
   const {data: session} = useSession();
   const handleCheckboxChange = (link: string, checked: boolean) => {
+    
     setSelectedFeeds((prev) =>
       checked ? [...prev, link] : prev.filter((l) => l !== link)
     );
@@ -52,12 +54,10 @@ export default function FeedForm({
       body: JSON.stringify({ feedId }),
     });
     if (res.ok) {
-      // Optionally remove from selectedFeeds if it's there.
       const response = await fetch("/api/fetch-feeds");
       const data = await response.json();
       setAvailableFeeds(data.feeds || []);
       setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
-      // You might also update availableFeeds if needed.
     } else {
       const data = await res.json();
       console.error("Error removing feed:", data.error);
@@ -78,7 +78,22 @@ export default function FeedForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
+      <button
+        type="button"
+        onClick={() => setShowAddFeedForm((prev) => !prev)}
+        className="mb-4 px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+      >
+        {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
+      </button>
+      {showAddFeedForm && (
+        <AddFeedForm
+          onFeedAdded={() => {
+            setShowAddFeedForm(false);
+            // Optionally re-fetch available feeds here from your API
+          }}
+        />
+      )}
       <details className="mb-4 cursor-pointer">
         <summary className="font-bold">Select News Feeds</summary>
         <div className="mt-2">
@@ -110,6 +125,7 @@ export default function FeedForm({
       <div className="flex space-x-4 mb-4">
         <button
           type="submit"
+          onClick={handleSubmit}
           disabled={loading}
           className="inline-block px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
         >
@@ -123,6 +139,6 @@ export default function FeedForm({
           Toggle Links
         </button>
       </div>
-    </form>
+    </div>
   );
 }
