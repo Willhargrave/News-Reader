@@ -21,7 +21,7 @@ export async function DELETE(request: Request) {
   }
 
   // Get the current removedFeeds array (as a string array)
-  let removedFeeds: string[] = user.removedFeeds as string[] || [];
+  const removedFeeds: string[] = user.removedFeeds as string[] || [];
   if (!removedFeeds.includes(feedId)) {
     removedFeeds.push(feedId);
   }

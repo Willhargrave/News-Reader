@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         id: uuidv4(),
         username,
         password: hashedPassword,
-        feeds: [],
+        removedFeeds: [],
       },
     });
 
