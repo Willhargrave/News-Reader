@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect} from "react";
+import { useState, useEffect, useCallback} from "react";
 import Head from "next/head";
 import Header from "../components/Header";
 import FeedForm from "../components/FeedForm";
@@ -19,7 +19,8 @@ export default function Home() {
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
   const toggleLinks = () => setLinksVisible((prev) => !prev);
 
-  useEffect(() => {
+  
+  const refreshFeeds = useCallback(() => {
     if (session) {
       fetch("/api/fetch-feeds")
         .then((res) => res.json())
@@ -33,6 +34,12 @@ export default function Home() {
       setSelectedFeeds([]); 
     }
   }, [session]);
+
+  useEffect(() => {
+    refreshFeeds();
+  }, [refreshFeeds]);
+
+
 
 
 
@@ -52,6 +59,7 @@ export default function Home() {
           setLoading={setLoading}
           toggleLinks={toggleLinks}
           loading={loading}
+          refreshFeeds={refreshFeeds}
         />
         <ArticleList articles={articles} linksVisible={linksVisible} />
       </div>

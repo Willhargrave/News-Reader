@@ -10,14 +10,28 @@ export async function POST(request: Request) {
     if (!link) {
       return NextResponse.json({ error: "Feed link is required" }, { status: 400 });
     }
+
     const feed = await parser.parseURL(link);
     const title = customTitle || feed.title || "Untitled Feed";
+
     const newFeed = await prisma.feed.create({
       data: { title, link },
     });
-    return NextResponse.json({ message: "Feed added successfully", feed: newFeed }, { status: 201 });
+
+    return NextResponse.json(
+      { message: "Feed added successfully", feed: newFeed },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error adding feed:", error);
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      return NextResponse.json({ error: "Feed already exists" }, { status: 400 });
+    }
     return NextResponse.json({ error: "Error adding feed" }, { status: 500 });
   }
 }

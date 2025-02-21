@@ -24,11 +24,12 @@ type FeedFormProps = {
     setArticles: Dispatch<SetStateAction<Article[]>>;
     setLoading: Dispatch<SetStateAction<boolean>>;
     toggleLinks: () => void;
+    refreshFeeds: () => void;
     loading: boolean;
   };
 export default function FeedForm({
   availableFeeds,
-  setAvailableFeeds,
+  refreshFeeds,
   selectedFeeds,
   setSelectedFeeds,
   setArticles,
@@ -54,9 +55,7 @@ export default function FeedForm({
       body: JSON.stringify({ feedId }),
     });
     if (res.ok) {
-      const response = await fetch("/api/fetch-feeds");
-      const data = await response.json();
-      setAvailableFeeds(data.feeds || []);
+      refreshFeeds();
       setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
     } else {
       const data = await res.json();
@@ -87,12 +86,12 @@ export default function FeedForm({
         {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
       </button>
       {showAddFeedForm && (
-        <AddFeedForm
-          onFeedAdded={() => {
-            setShowAddFeedForm(false);
-            // Optionally re-fetch available feeds here from your API
-          }}
-        />
+      <AddFeedForm
+      onFeedAdded={() => {
+        refreshFeeds();
+        setShowAddFeedForm(false);
+      }}
+    />
       )}
       <details className="mb-4 cursor-pointer">
         <summary className="font-bold">Select News Feeds</summary>
