@@ -37,7 +37,6 @@ export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
     setLoading(false);
   };
 
-  // Confirm addition of the feed.
   const handleConfirm = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
