@@ -7,9 +7,37 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model Category {
+  id      String   @id @default(uuid())
+  name    String   @unique
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  feeds   UserFeed[]
+}
+
+model Feed {
+  // Global default feeds; these are seeded from feeds.json.
   id       String   @id @default(uuid())
-  username String   @unique
-  password String
-  feeds    Json?
+  title    String
+  link     String   @unique
+  category String   @default("general")
+}
+
+model UserFeed {
+  // Custom feeds added by a user.
+  id        String   @id @default(uuid())
+  title     String
+  link      String   @unique
+  category  String   @default("general")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model User {
+  id             String       @id @default(uuid())
+  username       String       @unique
+  password       String
+  removedFeeds   String[]     @default([]) // list of global Feed ids that the user removed
+  userFeeds      UserFeed[]
+  categories     Category[]
 }
