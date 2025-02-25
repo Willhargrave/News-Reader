@@ -1,83 +1,146 @@
- [
-    {
-      "title": "BBC",
-      "link": "http://feeds.bbci.co.uk/news/rss.xml"
-    },
-    {
-      "title": "NYTimes",
-      "link": "http://feeds.nytimes.com/nyt/rss/HomePage"
-    },
-    {
-      "title": "The Guardian",
-      "link": "https://www.theguardian.com/uk/rss"
-    },
-    {
-      "title": "Al Jazeera",
-      "link": "https://www.aljazeera.com/xml/rss/all.xml"
-    },
-    {
-      "title": "FT",
-      "link": "https://www.ft.com/?format=rss"
-    },
-    {
-      "title": "Bloomberg",
-      "link": "https://www.bloomberg.com/feed"
-    },
-    {
-      "title": "NPR",
-      "link": "http://www.npr.org/rss/rss.php?id=1001"
-    },
-    {
-      "title": "USA Today",
-      "link": "http://rssfeeds.usatoday.com/usatoday-NewsTopStories"
-    },
-    {
-      "title": "Fox News",
-      "link": "http://feeds.foxnews.com/foxnews/latest"
-    },
-    {
-      "title": "Wired",
-      "link": "https://www.wired.com/feed/rss"
-    },
-    {
-      "title": "Ars Technica",
-      "link": "http://feeds.arstechnica.com/arstechnica/index"
-    },
-    {
-      "title": "Engadget",
-      "link": "https://www.engadget.com/rss.xml"
-    },
-    {
-      "title": "Gizmodo",
-      "link": "https://gizmodo.com/rss"
-    },
-    {
-      "title": "New Yorker",
-      "link": "https://www.newyorker.com/feed/news"
-    },
-    {
-      "title": "Time",
-      "link": "http://feeds2.feedburner.com/time/topstories"
-    },
-    {
-      "title": "CNBC",
-      "link": "https://www.cnbc.com/id/10000664/device/rss/rss.html"
-    },
-    {
-      "title": "LA Times",
-      "link": "http://www.latimes.com/rss2.0.xml"
-    },
-    {
-      "title": "Yahoo News",
-      "link": "https://news.yahoo.com/rss/mostviewed"
-    },
-    {
-      "title": "CBS News",
-      "link": "http://www.cbsnews.com/latest/rss/main"
-    },
-    {
-      "title": "NHK",
-      "link": "https://www.nhk.or.jp/rss/news/cat0.xml"
-    }
-  ]
-  
+[
+  {
+    "title": "BBC",
+    "link": "http://feeds.bbci.co.uk/news/rss.xml",
+    "category": "news"
+  },
+  {
+    "title": "NYTimes",
+    "link": "http://feeds.nytimes.com/nyt/rss/HomePage",
+    "category": "news"
+  },
+  {
+    "title": "The Guardian",
+    "link": "https://www.theguardian.com/uk/rss",
+    "category": "news"
+  },
+  {
+    "title": "Al Jazeera",
+    "link": "https://www.aljazeera.com/xml/rss/all.xml",
+    "category": "news"
+  },
+  {
+    "title": "NPR",
+    "link": "http://www.npr.org/rss/rss.php?id=1001",
+    "category": "news"
+  },
+  {
+    "title": "Fox News",
+    "link": "http://feeds.foxnews.com/foxnews/latest",
+    "category": "news"
+  },
+  {
+    "title": "Time",
+    "link": "http://feeds2.feedburner.com/time/topstories",
+    "category": "news"
+  },
+  {
+    "title": "Yahoo News",
+    "link": "https://news.yahoo.com/rss/mostviewed",
+    "category": "news"
+  },
+
+  {
+    "title": "BBC Sport",
+    "link": "http://feeds.bbci.co.uk/sport/rss.xml?edition=uk",
+    "category": "sport"
+  },
+  {
+    "title": "ESPN",
+    "link": "http://www.espn.com/espn/rss/news",
+    "category": "sport"
+  },
+  {
+    "title": "Sky Sports",
+    "link": "http://www.skysports.com/rss/12040",
+    "category": "sport"
+  },
+  {
+    "title": "SI Top Stories",
+    "link": "https://www.si.com/rss/si_topstories.rss",
+    "category": "sport"
+  },
+  {
+    "title": "CBS Sports",
+    "link": "http://www.cbssports.com/rss/headlines/",
+    "category": "sport"
+  },
+
+  {
+    "title": "Wired Tech",
+    "link": "https://www.wired.com/feed/rss",
+    "category": "technology"
+  },
+  {
+    "title": "TechCrunch",
+    "link": "http://feeds.feedburner.com/TechCrunch/",
+    "category": "technology"
+  },
+  {
+    "title": "Ars Technica",
+    "link": "http://feeds.arstechnica.com/arstechnica/index",
+    "category": "technology"
+  },
+  {
+    "title": "Engadget",
+    "link": "https://www.engadget.com/rss.xml",
+    "category": "technology"
+  },
+  {
+    "title": "CNET",
+    "link": "https://www.cnet.com/rss/all/",
+    "category": "technology"
+  },
+
+  {
+    "title": "CNBC Finance",
+    "link": "https://www.cnbc.com/id/15839135/device/rss/rss.html",
+    "category": "finance"
+  },
+  {
+    "title": "Bloomberg Finance",
+    "link": "https://www.bloomberg.com/markets/rss",
+    "category": "finance"
+  },
+  {
+    "title": "Financial Times",
+    "link": "https://www.ft.com/?format=rss",
+    "category": "finance"
+  },
+  {
+    "title": "Reuters Business News",
+    "link": "http://feeds.reuters.com/reuters/businessNews",
+    "category": "finance"
+  },
+  {
+    "title": "MarketWatch Top Stories",
+    "link": "https://www.marketwatch.com/rss/topstories",
+    "category": "finance"
+  },
+
+  {
+    "title": "The Guardian - Climate Change",
+    "link": "https://www.theguardian.com/environment/climate-change/rss",
+    "category": "climate"
+  },
+  {
+    "title": "Climate Home News",
+    "link": "https://www.climatechangenews.com/feed/",
+    "category": "climate"
+  },
+  {
+    "title": "Mongabay",
+    "link": "https://news.mongabay.com/feed/",
+    "category": "climate"
+  },
+  {
+    "title": "EcoWatch",
+    "link": "https://www.ecowatch.com/rss",
+    "category": "climate"
+  },
+  {
+    "title": "Carbon Brief",
+    "link": "https://www.carbonbrief.org/rss",
+    "category": "climate"
+  }
+]
