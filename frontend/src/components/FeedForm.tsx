@@ -61,14 +61,16 @@ export default function FeedForm({
     setLoading(false);
   };
 
-  const groupedFeeds = availableFeeds.reduce((acc, feed) => {
+  const groupedFeeds: Record<string, Feed[]> = {};
+  if (Array.isArray(availableFeeds)) {
+  availableFeeds.forEach((feed) => {
     const category = feed.category || "news";
-    if (!acc[category]) {
-      acc[category] = [];
+    if (!groupedFeeds[category]) {
+      groupedFeeds[category] = [];
     }
-    acc[category].push(feed);
-    return acc;
-  }, {} as Record<string, Feed[]>);
+    groupedFeeds[category].push(feed);
+  });
+}
 
   return (
     <div>
