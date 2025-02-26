@@ -12,12 +12,13 @@ async function main() {
   for (const feed of feeds) {
     const existing = await prisma.feed.findUnique({ where: { link: feed.link } });
     if (!existing) {
-      await prisma.feed.create({
-        data: {
-          title: feed.title,
-          link: feed.link,
-        },
-      });
+        await prisma.feed.create({
+            data: {
+              title: feed.title,
+              link: feed.link,
+              category: feed.category, 
+            },
+          });
       console.log(`Inserted feed: ${feed.title}`);
     } else {
       console.log(`Feed exists: ${feed.title}`);

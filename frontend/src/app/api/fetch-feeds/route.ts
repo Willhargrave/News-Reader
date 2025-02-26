@@ -1,11 +1,12 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function GET(request: Request) {
   let removedFeedIds: string[] = [];
   const session = await getServerSession(authOptions);
+  
   if (session && session.user?.name) {
     const user = await prisma.user.findUnique({
       where: { username: session.user.name },
@@ -15,7 +16,28 @@ export async function GET(request: Request) {
     }
   }
   
-  const feeds = await prisma.feed.findMany();
-  const filteredFeeds = feeds.filter(feed => !removedFeedIds.includes(feed.id));
-  return NextResponse.json({ feeds: filteredFeeds });
+  const globalFeeds = await prisma.feed.findMany();
+  const filteredGlobalFeeds = globalFeeds.filter(
+    (feed) => !removedFeedIds.includes(feed.id)
+  );
+  
+  let customFeeds = [];
+  if (session && session.user?.name) {
+    customFeeds = await prisma.userFeed.findMany({
+      where: { user: { username: session.user.name } },
+    });
+  }
+
+  const feeds = [...filteredGlobalFeeds, ...customFeeds];
+  
+  const groupedFeeds = feeds.reduce((acc, feed) => {
+  const category = feed.category || "news";
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(feed);
+  return acc;
+}, {} as Record<string, typeof feeds>);
+
+return NextResponse.json({ feeds: groupedFeeds });
 }

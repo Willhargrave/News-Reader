@@ -6,16 +6,17 @@ const parser = new Parser();
 
 export async function POST(request: Request) {
   try {
-    const { link, title: customTitle } = await request.json();
+    const { link, title: customTitle, category: customCategory } = await request.json();
     if (!link) {
       return NextResponse.json({ error: "Feed link is required" }, { status: 400 });
     }
 
     const feed = await parser.parseURL(link);
     const title = customTitle || feed.title || "Untitled Feed";
+    const category = customCategory || feed.category || "news"
 
     const newFeed = await prisma.feed.create({
-      data: { title, link },
+      data: { title, link, category },
     });
 
     return NextResponse.json(
