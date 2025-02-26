@@ -1,20 +1,9 @@
-import { FormEvent, Dispatch, SetStateAction, useState } from "react";
+import { FormEvent,  useState } from "react";
 import { useSession } from "next-auth/react";
 import AddFeedForm from "./AddFeedForm";
-import { Article, Feed } from "@/app/page";
+import { Feed, FeedFormProps } from "@/types";
 
 
-type FeedFormProps = {
-    availableFeeds: Feed[]; 
-    setAvailableFeeds: Dispatch<SetStateAction<Feed[]>>;
-    selectedFeeds: string[];
-    setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
-    setArticles: Dispatch<SetStateAction<Article[]>>;
-    setLoading: Dispatch<SetStateAction<boolean>>;
-    toggleLinks: () => void;
-    refreshFeeds: () => void;
-    loading: boolean;
-  };
 export default function FeedForm({
   availableFeeds,
   refreshFeeds,
