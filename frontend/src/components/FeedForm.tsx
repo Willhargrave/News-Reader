@@ -92,9 +92,9 @@ export default function FeedForm({
                   onChange={(e) =>
                     handleCheckboxChange(feed.link, e.target.checked)
                   }
-                  className="mr-2"
+                  className="mr-2 cursor-pointer"
                 />
-                <span>{feed.title}</span>
+                <span className="cursor-default">{feed.title}</span>
                 {session && feed.id && (
                   <button
                     type="button"
