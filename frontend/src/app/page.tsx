@@ -19,7 +19,7 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
   const toggleLinks = () => setLinksVisible((prev) => !prev);
-
+  
   
   const refreshFeeds = useCallback(() => {
     if (session) {
@@ -39,9 +39,6 @@ export default function Home() {
   useEffect(() => {
     refreshFeeds();
   }, [refreshFeeds]);
-
-
-
 
 
   return (

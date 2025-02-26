@@ -52,14 +52,14 @@ export default function FeedForm({
 
   const groupedFeeds: Record<string, Feed[]> = {};
   if (Array.isArray(availableFeeds)) {
-  availableFeeds.forEach((feed) => {
-    const category = feed.category || "news";
-    if (!groupedFeeds[category]) {
-      groupedFeeds[category] = [];
-    }
-    groupedFeeds[category].push(feed);
-  });
-}
+    availableFeeds.forEach((feed) => {
+      const category = feed.category || "news";
+      if (!groupedFeeds[category]) {
+        groupedFeeds[category] = [];
+      }
+      groupedFeeds[category].push(feed);
+    });
+  }
 
   return (
     <div>
