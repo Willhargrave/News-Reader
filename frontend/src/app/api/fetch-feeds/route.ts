@@ -6,9 +6,9 @@ import { authOptions } from "../auth/[...nextauth]/route";
 export async function GET(request: Request) {
   let removedFeedIds: string[] = [];
   const session = await getServerSession(authOptions);
-  
+  let user = null;
   if (session && session.user?.name) {
-    const user = await prisma.user.findUnique({
+    user = await prisma.user.findUnique({
       where: { username: session.user.name },
     });
     if (user && user.removedFeeds) {
@@ -22,22 +22,14 @@ export async function GET(request: Request) {
   );
   
   let customFeeds = [];
-  if (session && session.user?.name) {
+  if (session && session.user?.name && user) {
     customFeeds = await prisma.userFeed.findMany({
-      where: { user: { username: session.user.name } },
+      where: { userId: user.id },
     });
   }
-
+  
   const feeds = [...filteredGlobalFeeds, ...customFeeds];
   
-  const groupedFeeds = feeds.reduce((acc, feed) => {
-  const category = feed.category || "news";
-  if (!acc[category]) {
-    acc[category] = [];
-  }
-  acc[category].push(feed);
-  return acc;
-}, {} as Record<string, typeof feeds>);
-
-return NextResponse.json({ feeds: groupedFeeds });
+  return NextResponse.json({ feeds });
 }
+
