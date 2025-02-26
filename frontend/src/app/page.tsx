@@ -7,6 +7,7 @@ import FeedForm from "../components/FeedForm";
 import ArticleList from "../components/ArticleList";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
+import { Article, Feed } from "@/types";
 
 
 export default function Home() {
@@ -66,18 +67,3 @@ export default function Home() {
     </>
   );
 }
-
-export type Article = {
-  feedTitle: string;
-  headline: string;
-  content: string;
-  link: string;
-};
-
-export type Feed = {
-  id?: string;
-  title: string;
-  link: string;
-  category: string;
-};
-
