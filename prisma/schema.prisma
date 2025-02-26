@@ -8,36 +8,25 @@ generator client {
 }
 
 model Feed {
-  id       String   @id @default(uuid())
+  id       String @id @default(uuid())
   title    String
-  link     String   @unique
-  category String   @default("general")
-}
-
-model Category {
-  id        String      @id @default(uuid())
-  name      String      @unique
-  user      User        @relation(fields: [userId], references: [id])
-  userId    String
-  userFeeds UserFeed[] 
+  link     String @unique
+  category String @default("news")
 }
 
 model UserFeed {
-  id         String      @id @default(uuid())
-  title      String
-  link       String      @unique
-  user       User        @relation(fields: [userId], references: [id])
-  userId     String
-  category   Category?   @relation(fields: [categoryId], references: [id])
-  categoryId String?     
+  id       String @id @default(uuid())
+  title    String
+  link     String @unique
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  category String @default("news")
 }
 
 model User {
-  id             String   @id @default(uuid())
-  username       String   @unique
-  password       String
-  removedFeeds   Json     @default("[]")
-  userFeeds      UserFeed[]
-  categories     Category[]
+  id           String     @id @default(uuid())
+  username     String     @unique
+  password     String
+  removedFeeds Json       @default("[]")
+  userFeeds    UserFeed[]
 }
-

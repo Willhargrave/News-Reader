@@ -11,7 +11,8 @@ export async function POST(request: Request) {
     }
     const feed = await parser.parseURL(link);
     const title = feed.title || "Untitled Feed";
-    return NextResponse.json({ title });
+    const category = feed.category || "news"
+    return NextResponse.json({ title, category });
   } catch (error) {
     console.error("Error previewing feed:", error);
     return NextResponse.json({ error: "Error previewing feed" }, { status: 500 });

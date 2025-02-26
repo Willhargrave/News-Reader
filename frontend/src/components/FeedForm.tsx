@@ -1,20 +1,8 @@
 import { FormEvent, Dispatch, SetStateAction, useState } from "react";
 import { useSession } from "next-auth/react";
 import AddFeedForm from "./AddFeedForm";
+import { Article, Feed } from "@/app/page";
 
-
-type Feed = {
-  id?: string;
-  title: string;
-  link: string;
-};
-
-export type Article = {
-  feedTitle: string;
-  headline: string;
-  content: string;
-  link: string;
-};
 
 type FeedFormProps = {
     availableFeeds: Feed[]; 
@@ -40,13 +28,10 @@ export default function FeedForm({
   const [showAddFeedForm, setShowAddFeedForm] = useState(false);
   const {data: session} = useSession();
   const handleCheckboxChange = (link: string, checked: boolean) => {
-    
     setSelectedFeeds((prev) =>
       checked ? [...prev, link] : prev.filter((l) => l !== link)
     );
   };
-
-
   
   const handleRemoveFeed = async (feedId: string, feedLink: string) => {
     const res = await fetch("/api/user-feeds", {
@@ -76,6 +61,15 @@ export default function FeedForm({
     setLoading(false);
   };
 
+  const groupedFeeds = availableFeeds.reduce((acc, feed) => {
+    const category = feed.category || "news";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(feed);
+    return acc;
+  }, {} as Record<string, Feed[]>);
+
   return (
     <div>
       <button
@@ -86,41 +80,44 @@ export default function FeedForm({
         {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
       </button>
       {showAddFeedForm && (
-      <AddFeedForm
-      onFeedAdded={() => {
-        refreshFeeds();
-        setShowAddFeedForm(false);
-      }}
-    />
+        <AddFeedForm
+          onFeedAdded={() => {
+            refreshFeeds();
+            setShowAddFeedForm(false);
+          }}
+        />
       )}
-      <details className="mb-4 cursor-pointer">
-        <summary className="font-bold">Select News Feeds</summary>
-        <div className="mt-2">
-          {availableFeeds.map((feed) => (
-            <div key={feed.link} className="flex items-center space-x-2 mb-1">
-              <input
-                type="checkbox"
-                value={feed.link}
-                checked={selectedFeeds.includes(feed.link)}
-                onChange={(e) =>
-                  handleCheckboxChange(feed.link, e.target.checked)
-                }
-                className="mr-2"
-              />
-              <span>{feed.title}</span>
-              {session && feed.id && (
-                <button
-                  type="button"
-                  onClick={() => handleRemoveFeed(feed.id!, feed.link)}
-                  className="text-red-500 text-sm ml-2"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      </details>
+
+      {Object.keys(groupedFeeds).map((categoryName) => (
+        <details key={categoryName} className="mb-4 cursor-pointer">
+          <summary className="font-bold">{categoryName.toUpperCase()}</summary>
+          <div className="mt-2">
+            {groupedFeeds[categoryName].map((feed) => (
+              <div key={feed.link} className="flex items-center space-x-2 mb-1">
+                <input
+                  type="checkbox"
+                  value={feed.link}
+                  checked={selectedFeeds.includes(feed.link)}
+                  onChange={(e) =>
+                    handleCheckboxChange(feed.link, e.target.checked)
+                  }
+                  className="mr-2"
+                />
+                <span>{feed.title}</span>
+                {session && feed.id && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFeed(feed.id!, feed.link)}
+                    className="text-red-500 text-sm ml-2"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </details>
+      ))}
       <div className="flex space-x-4 mb-4">
         <button
           type="submit"

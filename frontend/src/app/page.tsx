@@ -74,9 +74,10 @@ export type Article = {
   link: string;
 };
 
-type Feed = {
+export type Feed = {
   id?: string;
   title: string;
   link: string;
+  category: string;
 };
 
