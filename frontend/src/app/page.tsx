@@ -5,7 +5,7 @@ import Head from "next/head";
 import Header from "../components/Header";
 import FeedForm from "../components/FeedForm";
 import ArticleList from "../components/ArticleList";
-import Explanation from "@/components/Explanation";
+import SiteExplanation from "@/components/SiteExplanation";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
@@ -48,7 +48,7 @@ export default function Home() {
       </Head>
       <div className="min-h-screen p-8 font-sans">
         <Header />
-        <Explanation/>
+        <SiteExplanation/>
         <FeedForm
           availableFeeds={availableFeeds}
           setAvailableFeeds={setAvailableFeeds}
