@@ -73,13 +73,13 @@ export default function FeedForm({
       </button> )}
       {showAddFeedForm && (
         <div>
-        <AddFeedExplanation initiallyExpanded={true}/>
         <AddFeedForm
           onFeedAdded={() => {
             refreshFeeds();
             setShowAddFeedForm(false);
           }}
         />
+         <AddFeedExplanation initiallyExpanded={true}/>
         </div>
       )}
 
