@@ -1,6 +1,7 @@
 import { FormEvent,  useState } from "react";
 import { useSession } from "next-auth/react";
 import AddFeedForm from "./AddFeedForm";
+import AddFeedExplanation from "./AddFeedExplanation";
 import { Feed, FeedFormProps } from "@/types";
 
 
@@ -71,12 +72,15 @@ export default function FeedForm({
         {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
       </button> )}
       {showAddFeedForm && (
+        <div>
+        <AddFeedExplanation initiallyExpanded={true}/>
         <AddFeedForm
           onFeedAdded={() => {
             refreshFeeds();
             setShowAddFeedForm(false);
           }}
         />
+        </div>
       )}
 
       {Object.keys(groupedFeeds).map((categoryName) => (
