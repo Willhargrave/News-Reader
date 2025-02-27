@@ -27,7 +27,7 @@ export const authOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET || "my-secret", // Ensure you use a strong secret in production
+  secret: process.env.NEXTAUTH_SECRET || "my-secret", 
 };
 
 const handler = NextAuth(authOptions);

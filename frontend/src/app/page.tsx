@@ -5,10 +5,10 @@ import Head from "next/head";
 import Header from "../components/Header";
 import FeedForm from "../components/FeedForm";
 import ArticleList from "../components/ArticleList";
+import Explanation from "@/components/Explanation";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
-
 
 export default function Home() {
   
@@ -20,7 +20,7 @@ export default function Home() {
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
   const toggleLinks = () => setLinksVisible((prev) => !prev);
   
-  
+
   const refreshFeeds = useCallback(() => {
     if (session) {
       fetch("/api/fetch-feeds")
@@ -48,6 +48,7 @@ export default function Home() {
       </Head>
       <div className="min-h-screen p-8 font-sans">
         <Header />
+        <Explanation/>
         <FeedForm
           availableFeeds={availableFeeds}
           setAvailableFeeds={setAvailableFeeds}

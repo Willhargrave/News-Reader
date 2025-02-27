@@ -63,13 +63,13 @@ export default function FeedForm({
 
   return (
     <div>
-      <button
+      {session && (<button
         type="button"
         onClick={() => setShowAddFeedForm((prev) => !prev)}
         className="mb-4 px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
       >
         {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
-      </button>
+      </button> )}
       {showAddFeedForm && (
         <AddFeedForm
           onFeedAdded={() => {
