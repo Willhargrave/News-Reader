@@ -1,9 +1,10 @@
-import { FormEvent,  useState } from "react";
+"use client";
+
+import { FormEvent, useState } from "react";
 import { useSession } from "next-auth/react";
 import AddFeedForm from "./AddFeedForm";
-import AddFeedExplanation from "./AddFeedExplanation";
-import { Feed, FeedFormProps } from "@/types";
-
+import { Feed } from "../types";
+import { FeedFormProps } from "../types";
 
 export default function FeedForm({
   availableFeeds,
@@ -16,13 +17,24 @@ export default function FeedForm({
   loading,
 }: FeedFormProps) {
   const [showAddFeedForm, setShowAddFeedForm] = useState(false);
-  const {data: session} = useSession();
+  const { data: session } = useSession();
+  const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
+  const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
+  
+
   const handleCheckboxChange = (link: string, checked: boolean) => {
     setSelectedFeeds((prev) =>
       checked ? [...prev, link] : prev.filter((l) => l !== link)
     );
+    if (checked && !feedStoryCounts[link]) {
+      setFeedStoryCounts((prev) => ({ ...prev, [link]: 10 }));
+    }
   };
-  
+
+  const handleCountChange = (link: string, value: number) => {
+    setFeedStoryCounts((prev) => ({ ...prev, [link]: value }));
+  };
+
   const handleRemoveFeed = async (feedId: string, feedLink: string) => {
     const res = await fetch("/api/user-feeds", {
       method: "DELETE",
@@ -32,6 +44,10 @@ export default function FeedForm({
     if (res.ok) {
       refreshFeeds();
       setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
+      setFeedStoryCounts((prev) => {
+        const { [feedLink]: removed, ...rest } = prev;
+        return rest;
+      });
     } else {
       const data = await res.json();
       console.error("Error removing feed:", data.error);
@@ -44,7 +60,7 @@ export default function FeedForm({
     const res = await fetch("/api/fetch-news", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ selectedFeeds }),
+      body: JSON.stringify({ selectedFeeds, feedStoryCounts, displayMode }),
     });
     const data = await res.json();
     setArticles(data.articles || []);
@@ -64,25 +80,21 @@ export default function FeedForm({
 
   return (
     <div>
-      {session && (<button
+      <button
         type="button"
         onClick={() => setShowAddFeedForm((prev) => !prev)}
         className="mb-4 px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
       >
         {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
-      </button> )}
+      </button>
       {showAddFeedForm && (
-        <div>
         <AddFeedForm
           onFeedAdded={() => {
             refreshFeeds();
             setShowAddFeedForm(false);
           }}
         />
-         <AddFeedExplanation initiallyExpanded={true}/>
-        </div>
       )}
-
       {Object.keys(groupedFeeds).map((categoryName) => (
         <details key={categoryName} className="mb-4 cursor-pointer">
           <summary className="font-bold">{categoryName.toUpperCase()}</summary>
@@ -108,11 +120,55 @@ export default function FeedForm({
                     Remove
                   </button>
                 )}
+                {selectedFeeds.includes(feed.link) && (
+                    <input
+                        type="number"
+                        min={1}
+                        value={feedStoryCounts[feed.link] ?? 10}
+                        onChange={(e) =>
+                        handleCountChange(feed.link, Number(e.target.value))
+                        }
+                        className="w-16 p-1 border ml-2 transition-all duration-400 ease-in-out"
+                        title="Stories from this feed"
+                    />
+                )}
+
               </div>
             ))}
           </div>
         </details>
       ))}
+      {selectedFeeds.length > 1 && (
+    <div className="mb-4">
+    <p className="font-bold mb-1">
+      How would you like the articles to be displayed?
+    </p>
+    <div className="flex items-center space-x-4">
+      <label className="flex items-center">
+        <input
+          type="radio"
+          name="displayMode"
+          value="grouped"
+          checked={displayMode === 'grouped'}
+          onChange={(e) => setDisplayMode(e.target.value as 'grouped' | 'interleaved')}
+          className="mr-1"
+        />
+        Grouped by feed
+      </label>
+      <label className="flex items-center">
+        <input
+          type="radio"
+          name="displayMode"
+          value="interleaved"
+          checked={displayMode === 'interleaved'}
+          onChange={(e) => setDisplayMode(e.target.value as 'grouped' | 'interleaved')}
+          className="mr-1"
+        />
+        Interleaved
+      </label>
+    </div>
+  </div>
+)}
       <div className="flex space-x-4 mb-4">
         <button
           type="submit"
