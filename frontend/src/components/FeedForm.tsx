@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import AddFeedForm from "./AddFeedForm";
 import { Feed } from "../types";
 import { FeedFormProps } from "../types";
+import AddFeedExplanation from "./AddFeedExplanation";
 
 export default function FeedForm({
   availableFeeds,
@@ -88,12 +89,15 @@ export default function FeedForm({
         {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
       </button>
       {showAddFeedForm && (
+          <div>
         <AddFeedForm
           onFeedAdded={() => {
             refreshFeeds();
             setShowAddFeedForm(false);
           }}
         />
+        <AddFeedExplanation  initiallyExpanded={true} />
+        </div>
       )}
       {Object.keys(groupedFeeds).map((categoryName) => (
         <details key={categoryName} className="mb-4 cursor-pointer">
