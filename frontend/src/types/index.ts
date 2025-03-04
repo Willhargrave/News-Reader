@@ -39,3 +39,12 @@ export type FeedFormProps = {
     feedsInCategory: Feed[];
     refreshFeeds: () => void;
   }
+
+  export interface FeedItemProps {
+    refreshFeeds: () => void;
+    setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
+    feedStoryCounts: Record<string, number>;
+    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
+    selectedFeeds: string[];
+    feed: Feed;
+  }

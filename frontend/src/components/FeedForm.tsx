@@ -19,7 +19,6 @@ export default function FeedForm({
   loading,
 }: FeedFormProps) {
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
-    const { data: session } = useSession();
     const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [globalCount, setGlobalCount] = useState<number>(10);

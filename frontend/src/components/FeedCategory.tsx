@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { FeedCategoryProps } from "@/types";
+import FeedItem from "./FeedItem";
 
 export default function FeedCategory({
     selectedFeeds, 
@@ -16,34 +17,8 @@ export default function FeedCategory({
     refreshFeeds, 
 }: FeedCategoryProps) {
     const { data: session } = useSession();
-
-         const handleCheckBoxChange = (link: string, checked: boolean) => {
-           setSelectedFeeds((prev) =>
-             checked ? [...prev, link] : prev.filter((l) => l !== link)
-           );
-           if (checked && !feedStoryCounts[link]) {
-             setFeedStoryCounts((prev) => ({ ...prev, [link]: 10 }));
-           }
-         };
-       
-         const handleRemoveFeed = async (feedId: string, feedLink: string) => {
-           const res = await fetch("/api/user-feeds", {
-             method: "DELETE",
-             headers: { "Content-Type": "application/json" },
-             body: JSON.stringify({ feedId }),
-           });
-           if (res.ok) {
-             refreshFeeds();
-             setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
-             setFeedStoryCounts((prev) => {
-               const { [feedLink]: removed, ...rest } = prev;
-               return rest;
-             });
-           } else {
-             const data = await res.json();
-             console.error("Error removing feed:", data.error);
-           }
-         };
+  
+ 
     const handleSelectAllForCategory = (categoryName: string, select: boolean) => {
         const feedsInCategory = groupedFeeds[categoryName] || [];
         const feedLinks = feedsInCategory.map((feed) => feed.link);
@@ -64,11 +39,8 @@ export default function FeedCategory({
         }
       };
 
-      const handleCountChange = (link: string, value: number) => {
-        setFeedStoryCounts((prev) => ({ ...prev, [link]: value }));
-      };
-    
-      return (
+     
+   return (
     <details key={categoryName} className="mb-4 cursor-pointer">
       <summary className="font-bold">{categoryName.toUpperCase()}</summary>
       <div className="mt-2">
@@ -84,37 +56,14 @@ export default function FeedCategory({
           <span>Select All</span>
         </label>
         {feedsInCategory.map((feed) => (
-          <div key={feed.link} className="flex items-center space-x-2 mb-1">
-            <input
-              type="checkbox"
-              value={feed.link}
-              checked={selectedFeeds.includes(feed.link)}
-              onChange={(e) => handleCheckBoxChange(feed.link, e.target.checked)}
-              className="mr-2 cursor-pointer"
-            />
-            <span className="cursor-default">{feed.title}</span>
-            {session && feed.id && (
-              <button
-                type="button"
-                onClick={() => handleRemoveFeed(feed.id!, feed.link)}
-                className="text-red-500 text-sm ml-2"
-              >
-                Remove
-              </button>
-            )}
-            {selectedFeeds.includes(feed.link) && (
-              <input
-                type="number"
-                min={1}
-                value={feedStoryCounts[feed.link] ?? 10}
-                onChange={(e) =>
-                  handleCountChange(feed.link, Number(e.target.value))
-                }
-                className="w-16 p-1 border ml-2 transition-all duration-400 ease-in-out"
-                title="Stories from this feed"
-              />
-            )}
-          </div>
+         <FeedItem 
+         key={feed.link}
+         refreshFeeds={refreshFeeds} 
+         setSelectedFeeds={setSelectedFeeds}
+          feedStoryCounts={feedStoryCounts} 
+          setFeedStoryCounts={setFeedStoryCounts}
+           selectedFeeds={selectedFeeds}
+           feed={feed}/>
         ))}
       </div>
     </details>
