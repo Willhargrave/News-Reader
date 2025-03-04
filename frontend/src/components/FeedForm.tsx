@@ -21,6 +21,8 @@ export default function FeedForm({
   const { data: session } = useSession();
   const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
   const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
+  const [globalCount, setGlobalCount] = useState<number>(10);
+
   
 
   const handleCheckboxChange = (link: string, checked: boolean) => {
@@ -99,6 +101,33 @@ export default function FeedForm({
         <AddFeedExplanation  initiallyExpanded={true} />
         </div>
       )}
+      {selectedFeeds.length > 1 && (
+    <div className="mb-4">
+    <label htmlFor="globalCounter" className="block font-bold mb-1">
+      Stories for all selected feeds:
+    </label>
+    <input
+      id="globalCounter"
+      type="number"
+      min={1}
+      value={globalCount}
+      onChange={(e) => {
+        const newCount = Number(e.target.value);
+        setGlobalCount(newCount);
+        setFeedStoryCounts((prev) => {
+          const updated = { ...prev };
+          selectedFeeds.forEach((feedLink) => {
+            updated[feedLink] = newCount;
+          });
+          return updated;
+        });
+      }}
+      className="w-16 p-1 border transition-all duration-300 ease-in-out"
+      title="Set story count for all selected feeds"
+    />
+  </div>
+)}
+
       {Object.keys(groupedFeeds).map((categoryName) => (
         <details key={categoryName} className="mb-4 cursor-pointer">
           <summary className="font-bold">{categoryName.toUpperCase()}</summary>
