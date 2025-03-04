@@ -1,6 +1,5 @@
 "use client"
 
-import { useSession } from "next-auth/react"
 import { FeedCategoryProps } from "@/types";
 import FeedItem from "./FeedItem";
 
@@ -16,9 +15,8 @@ export default function FeedCategory({
     feedsInCategory, 
     refreshFeeds, 
 }: FeedCategoryProps) {
-    const { data: session } = useSession();
-  
  
+  
     const handleSelectAllForCategory = (categoryName: string, select: boolean) => {
         const feedsInCategory = groupedFeeds[categoryName] || [];
         const feedLinks = feedsInCategory.map((feed) => feed.link);
