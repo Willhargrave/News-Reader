@@ -6,6 +6,11 @@ export type Article = {
     content: string;
     link: string;
   };
+
+export type ArticleListProps = {
+    articles: Article[];
+    linksVisible: boolean;
+  };
   
 export type Feed = {
     id?: string;
@@ -26,6 +31,9 @@ export type FeedFormProps = {
     loading: boolean;
   };
 
+export type AddFeedFormProps = {
+    onFeedAdded: () => void;
+  };
 
   export interface FeedCategoryProps {
     selectedFeeds: string[];
@@ -73,3 +81,12 @@ export interface FeedItemProps {
   }
 
   
+export type BaseExplanationProps = {
+  title: string;
+  content: string;
+  initiallyExpanded?: boolean;
+};
+
+export type FeedAddExplanationProps = {
+    initiallyExpanded?: boolean;
+  };

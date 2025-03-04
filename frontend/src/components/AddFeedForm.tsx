@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-
-
-type AddFeedFormProps = {
-  onFeedAdded: () => void;
-};
+import { AddFeedFormProps } from "@/types";
 
 export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
     const [feedUrl, setFeedUrl] = useState("");

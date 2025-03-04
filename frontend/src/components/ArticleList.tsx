@@ -1,15 +1,4 @@
-type Article = {
-  feedTitle: string;
-  headline: string;
-  content: string;
-  link: string;
-};
-
-type ArticleListProps = {
-  articles: Article[];
-  linksVisible: boolean;
-};
-
+import { ArticleListProps } from "@/types";
 export default function ArticleList({ articles, linksVisible }: ArticleListProps) {
   return (
     <div>
