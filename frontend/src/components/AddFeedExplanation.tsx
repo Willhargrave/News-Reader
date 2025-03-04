@@ -1,11 +1,7 @@
 "use client";
 
 import BaseExplanation from "./BaseExplanation";
-
-
-type FeedAddExplanationProps = {
-    initiallyExpanded?: boolean;
-  };
+import type { FeedAddExplanationProps } from "@/types";
 
 export default function AddFeedExplanation({ initiallyExpanded = false }: FeedAddExplanationProps) {
   const content = `To add a new RSS feed, enter the URL of the feed in the input field and click "Preview Feed".

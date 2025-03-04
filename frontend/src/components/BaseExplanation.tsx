@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import { Transition } from "@headlessui/react";
-
-type BaseExplanationProps = {
-  title: string;
-  content: string;
-  initiallyExpanded?: boolean;
-};
-
+import { BaseExplanationProps } from "@/types";
 
 export default function BaseExplanation({
   title,
