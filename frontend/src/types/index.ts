@@ -63,4 +63,13 @@ export interface FeedItemProps {
     displayMode: "grouped" | "interleaved";
     setDisplayMode: Dispatch<SetStateAction<"grouped" | "interleaved">>;
   }
+
+
+  export interface GlobalFeedCounterProps {
+    globalCount: number;
+    setGlobalCount: Dispatch<SetStateAction<number>>;
+    selectedFeeds: string[];
+    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
+  }
+
   

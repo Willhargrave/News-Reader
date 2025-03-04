@@ -7,6 +7,7 @@ import { FeedFormProps } from "../types";
 import AddFeedExplanation from "./AddFeedExplanation";
 import FeedCategory from "./FeedCategory";
 import SelectDisplayTypeRadio from "./SelectDisplayType";
+import GlobalFeedCounter from "./GlobalFeedCounter";
 
 export default function FeedForm({
   availableFeeds,
@@ -22,8 +23,6 @@ export default function FeedForm({
     const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [globalCount, setGlobalCount] = useState<number>(10);
-  
-
   
     const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
@@ -70,30 +69,7 @@ export default function FeedForm({
           </div>
         )}
         {selectedFeeds.length > 1 && (
-          <div className="mb-4">
-            <label htmlFor="globalCounter" className="block font-bold mb-1">
-              Stories for all selected feeds:
-            </label>
-            <input
-              id="globalCounter"
-              type="number"
-              min={1}
-              value={globalCount}
-              onChange={(e) => {
-                const newCount = Number(e.target.value);
-                setGlobalCount(newCount);
-                setFeedStoryCounts((prev) => {
-                  const updated = { ...prev };
-                  selectedFeeds.forEach((feedLink) => {
-                    updated[feedLink] = newCount;
-                  });
-                  return updated;
-                });
-              }}
-              className="w-16 p-1 border transition-all duration-300 ease-in-out"
-              title="Set story count for all selected feeds"
-            />
-          </div>
+          <GlobalFeedCounter globalCount={globalCount} setGlobalCount={setGlobalCount} selectedFeeds={selectedFeeds} setFeedStoryCounts={setFeedStoryCounts}/>
         )}
         {Object.keys(groupedFeeds).map((categoryName) => {
           const feedsInCategory = groupedFeeds[categoryName] || [];
