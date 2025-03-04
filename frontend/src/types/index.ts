@@ -25,3 +25,17 @@ export type FeedFormProps = {
     refreshFeeds: () => void;
     loading: boolean;
   };
+
+
+  export interface FeedCategoryProps {
+    selectedFeeds: string[];
+    setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
+    feedStoryCounts: Record<string, number>;
+    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
+    groupedFeeds: Record<string, Feed[]>;
+    globalCount: number;
+    categoryName: string;
+    isAllSelected: boolean;
+    feedsInCategory: Feed[];
+    refreshFeeds: () => void;
+  }
