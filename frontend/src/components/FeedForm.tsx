@@ -34,6 +34,27 @@ export default function FeedForm({
     }
   };
 
+  const handleSelectAllForCategory = (categoryName: string, select: boolean) => {
+  const feedsInCategory = groupedFeeds[categoryName] || [];
+  const feedLinks = feedsInCategory.map((feed) => feed.link);
+  if (select) {
+    setSelectedFeeds((prev) => {
+      const newLinks = feedLinks.filter((link) => !prev.includes(link));
+      return [...prev, ...newLinks];
+    });
+    setFeedStoryCounts((prev) => {
+      const updated = { ...prev };
+      feedLinks.forEach((link) => {
+        if (!updated[link]) updated[link] = globalCount;
+      });
+      return updated;
+    });
+  } else {
+    setSelectedFeeds((prev) => prev.filter((link) => !feedLinks.includes(link)));
+  }
+};
+
+
   const handleCountChange = (link: string, value: number) => {
     setFeedStoryCounts((prev) => ({ ...prev, [link]: value }));
   };
@@ -128,49 +149,71 @@ export default function FeedForm({
   </div>
 )}
 
-      {Object.keys(groupedFeeds).map((categoryName) => (
-        <details key={categoryName} className="mb-4 cursor-pointer">
-          <summary className="font-bold">{categoryName.toUpperCase()}</summary>
-          <div className="mt-2">
-            {groupedFeeds[categoryName].map((feed) => (
-              <div key={feed.link} className="flex items-center space-x-2 mb-1">
-                <input
-                  type="checkbox"
-                  value={feed.link}
-                  checked={selectedFeeds.includes(feed.link)}
-                  onChange={(e) =>
-                    handleCheckboxChange(feed.link, e.target.checked)
-                  }
-                  className="mr-2 cursor-pointer"
-                />
-                <span className="cursor-default">{feed.title}</span>
-                {session && feed.id && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveFeed(feed.id!, feed.link)}
-                    className="text-red-500 text-sm ml-2"
-                  >
-                    Remove
-                  </button>
-                )}
-                {selectedFeeds.includes(feed.link) && (
-                    <input
-                        type="number"
-                        min={1}
-                        value={feedStoryCounts[feed.link] ?? 10}
-                        onChange={(e) =>
-                        handleCountChange(feed.link, Number(e.target.value))
-                        }
-                        className="w-16 p-1 border ml-2 transition-all duration-400 ease-in-out"
-                        title="Stories from this feed"
-                    />
-                )}
+{Object.keys(groupedFeeds).map((categoryName) => {
+  const feedsInCategory = groupedFeeds[categoryName] || [];
+  const isAllSelected = feedsInCategory.every(feed =>
+    selectedFeeds.includes(feed.link)
+  );
+  return (
+    <details key={categoryName} className="mb-4 cursor-pointer">
+      {/* The summary now only shows the category name. */}
+      <summary className="font-bold">{categoryName.toUpperCase()}</summary>
+      {/* This content is revealed after the user expands the category. */}
+      <div className="mt-2">
+        {/* The "Select All" checkbox is placed here, above the list of feeds. */}
+        <label className="flex items-center text-sm space-x-1 mb-2">
+          <input
+            type="checkbox"
+            checked={isAllSelected}
+            onChange={(e) =>
+              handleSelectAllForCategory(categoryName, e.target.checked)
+            }
+            className="cursor-pointer"
+          />
+          <span>Select All</span>
+        </label>
 
-              </div>
-            ))}
+        {/* Render each feed in this category. */}
+        {feedsInCategory.map((feed) => (
+          <div key={feed.link} className="flex items-center space-x-2 mb-1">
+            <input
+              type="checkbox"
+              value={feed.link}
+              checked={selectedFeeds.includes(feed.link)}
+              onChange={(e) =>
+                handleCheckboxChange(feed.link, e.target.checked)
+              }
+              className="mr-2 cursor-pointer"
+            />
+            <span className="cursor-default">{feed.title}</span>
+            {session && feed.id && (
+              <button
+                type="button"
+                onClick={() => handleRemoveFeed(feed.id!, feed.link)}
+                className="text-red-500 text-sm ml-2"
+              >
+                Remove
+              </button>
+            )}
+            {selectedFeeds.includes(feed.link) && (
+              <input
+                type="number"
+                min={1}
+                value={feedStoryCounts[feed.link] ?? 10}
+                onChange={(e) =>
+                  handleCountChange(feed.link, Number(e.target.value))
+                }
+                className="w-16 p-1 border ml-2 transition-all duration-400 ease-in-out"
+                title="Stories from this feed"
+              />
+            )}
           </div>
-        </details>
-      ))}
+        ))}
+      </div>
+    </details>
+  );
+})}
+
       {selectedFeeds.length > 1 && (
     <div className="mb-4">
     <p className="font-bold mb-1">
