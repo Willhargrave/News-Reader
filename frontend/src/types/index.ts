@@ -48,3 +48,19 @@ export type FeedFormProps = {
     selectedFeeds: string[];
     feed: Feed;
   }
+
+
+export interface FeedItemProps {
+    refreshFeeds: () => void;
+    setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
+    feedStoryCounts: Record<string, number>;
+    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
+    selectedFeeds: string[];
+    feed: Feed;
+  }
+
+  export interface SelectDisplayTypeRadioProps {
+    displayMode: "grouped" | "interleaved";
+    setDisplayMode: Dispatch<SetStateAction<"grouped" | "interleaved">>;
+  }
+  
