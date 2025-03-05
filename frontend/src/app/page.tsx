@@ -60,7 +60,7 @@ export default function Home() {
           loading={loading}
           refreshFeeds={refreshFeeds}
         />
-        <ArticleList articles={articles} linksVisible={linksVisible} />
+        <ArticleList articles={articles} linksVisible={linksVisible} loading={loading}/>
       </div>
     </>
   );
