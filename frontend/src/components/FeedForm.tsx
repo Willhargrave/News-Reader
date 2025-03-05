@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import AddFeedForm from "./AddFeedForm";
 import { Feed } from "../types";
 import { FeedFormProps } from "../types";
+import { Transition } from "@headlessui/react";
 import AddFeedExplanation from "./AddFeedExplanation";
 import FeedCategory from "./FeedCategory";
 import SelectDisplayTypeRadio from "./SelectDisplayType";
@@ -103,7 +104,17 @@ export default function FeedForm({
           );
         })}
         {selectedFeeds.length > 1 && (
-         <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode}/>
+          <Transition
+          enter="transition-opacity duration-500"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-500"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0">
+          <div>
+          <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
+           </div>
+         </Transition>
         )}
         <div className="flex space-x-4 mb-4">
           <button
