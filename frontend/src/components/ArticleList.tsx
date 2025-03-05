@@ -1,6 +1,15 @@
 import { ArticleListProps } from "@/types";
-export default function ArticleList({ articles, linksVisible }: ArticleListProps) {
-  return (
+export default function ArticleList({ articles, linksVisible, loading }: ArticleListProps) {
+  
+    if (loading) {
+        return (
+          <div className="flex justify-center items-center py-10">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        );
+      }
+  
+    return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Top News Stories</h2>
       {articles.map((article, index) => (

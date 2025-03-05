@@ -25,17 +25,27 @@ export default function FeedForm({
     const [globalCount, setGlobalCount] = useState<number>(10);
   
     const handleSubmit = async (e: FormEvent) => {
-      e.preventDefault();
-      setLoading(true);
-      const res = await fetch("/api/fetch-news", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ selectedFeeds, feedStoryCounts, displayMode }),
-      });
-      const data = await res.json();
-      setArticles(data.articles || []);
-      setLoading(false);
-    };
+        e.preventDefault();
+        setLoading(true);
+        const startTime = Date.now();
+        const res = await fetch("/api/fetch-news", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ selectedFeeds, feedStoryCounts, displayMode }),
+        });
+        const data = await res.json();
+        setArticles(data.articles || []);
+        const elapsed = Date.now() - startTime;
+        const minDelay = 1500;
+        if (elapsed < minDelay) {
+          setTimeout(() => {
+            setLoading(false);
+          }, minDelay - elapsed);
+        } else {
+          setLoading(false);
+        }
+      };
+      
   
     const groupedFeeds: Record<string, Feed[]> = {};
     if (Array.isArray(availableFeeds)) {

@@ -10,6 +10,7 @@ export type Article = {
 export type ArticleListProps = {
     articles: Article[];
     linksVisible: boolean;
+    loading: boolean
   };
   
 export type Feed = {
