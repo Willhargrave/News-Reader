@@ -80,7 +80,18 @@ export default function FeedForm({
           </div>
         )}
         {selectedFeeds.length > 1 && (
-          <GlobalFeedCounter globalCount={globalCount} setGlobalCount={setGlobalCount} selectedFeeds={selectedFeeds} setFeedStoryCounts={setFeedStoryCounts}/>
+            <Transition
+            enter="transition-opacity duration-700"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-700"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0">
+            <div>
+            <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
+            <GlobalFeedCounter globalCount={globalCount} setGlobalCount={setGlobalCount} selectedFeeds={selectedFeeds} setFeedStoryCounts={setFeedStoryCounts}/>
+             </div>
+           </Transition>
         )}
         {Object.keys(groupedFeeds).map((categoryName) => {
           const feedsInCategory = groupedFeeds[categoryName] || [];
@@ -103,19 +114,6 @@ export default function FeedForm({
             />
           );
         })}
-        {selectedFeeds.length > 1 && (
-          <Transition
-          enter="transition-opacity duration-500"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-500"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0">
-          <div>
-          <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
-           </div>
-         </Transition>
-        )}
         <div className="flex space-x-4 mb-4">
           <button
             type="submit"
@@ -137,4 +135,3 @@ export default function FeedForm({
     );
   }
   
-
