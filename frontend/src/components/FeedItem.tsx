@@ -65,17 +65,23 @@ export default function FeedItem({
             Remove
           </button>
         )}
-        {selectedFeeds.includes(feed.link) && (
-          <input
-            type="number"
-            min={1}
-            value={feedStoryCounts[feed.link] ?? 10}
-            onChange={(e) =>
-              handleCountChange(feed.link, Number(e.target.value))
-            }
-            className="w-16 p-1 border ml-2 transition-all duration-400 ease-in-out"
-            title="Stories from this feed"
-          />
+       {selectedFeeds.includes(feed.link) && (
+            <div className="flex items-center space-x-2">
+                <input
+                type="range"
+                min={1}
+                max={20} 
+                value={feedStoryCounts[feed.link] ?? 10}
+                onChange={(e) =>
+                    handleCountChange(feed.link, Number(e.target.value))
+                }
+                className="w-32 transition-all duration-400 ease-in-out"
+                title="Stories from this feed"
+                />
+                <span className="w-8 text-center">
+                {feedStoryCounts[feed.link] ?? 10}
+                </span>
+            </div>
         )}
       </div>
     )
