@@ -1,7 +1,10 @@
 "use client"
 
 import { FeedCategoryProps } from "@/types";
+import { Transition } from "@headlessui/react";
+import { useState } from "react";
 import FeedItem from "./FeedItem";
+
 
 export default function FeedCategory({
     selectedFeeds, 
@@ -15,6 +18,12 @@ export default function FeedCategory({
     feedsInCategory, 
     refreshFeeds, 
 }: FeedCategoryProps) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
+        setIsOpen(e.currentTarget.open);
+      };
+    
  
   
     const handleSelectAllForCategory = (categoryName: string, select: boolean) => {
@@ -39,8 +48,17 @@ export default function FeedCategory({
 
      
    return (
-    <details key={categoryName} className="mb-4 cursor-pointer">
+    <details key={categoryName} className="mb-4 cursor-pointer" onToggle={handleToggle}>
       <summary className="font-bold">{categoryName.toUpperCase()}</summary>
+      <Transition
+        show={isOpen}
+        enter="transition-opacity duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
       <div className="mt-2">
         <label className="flex items-center text-sm space-x-1 mb-2">
           <input
@@ -64,6 +82,7 @@ export default function FeedCategory({
            feed={feed}/>
         ))}
       </div>
+    </Transition>
     </details>
       )
 }

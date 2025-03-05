@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback} from "react";
+import { Transition } from "@headlessui/react";
 import Head from "next/head";
 import Header from "../components/Header";
 import FeedForm from "../components/FeedForm";
@@ -43,9 +44,17 @@ export default function Home() {
 
   return (
     <>
+  
       <Head>
         <title>Just The News</title>
       </Head>
+      <Transition
+        appear={true}
+        show={true}
+        enter="transition-opacity duration-1000"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+      >
       <div className="min-h-screen p-8 font-sans">
         <Header />
         <SiteExplanation/>
@@ -62,6 +71,7 @@ export default function Home() {
         />
         <ArticleList articles={articles} linksVisible={linksVisible} loading={loading}/>
       </div>
+      </Transition>
     </>
   );
 }
