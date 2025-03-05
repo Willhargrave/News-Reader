@@ -52,10 +52,10 @@ export default function FeedCategory({
       <summary className="font-bold">{categoryName.toUpperCase()}</summary>
       <Transition
         show={isOpen}
-        enter="transition-opacity duration-300"
+        enter="transition-opacity duration-500"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="transition-opacity duration-300"
+        leave="transition-opacity duration-500"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >

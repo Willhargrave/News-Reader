@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { FeedItemProps } from "@/types";
-
+import { Transition } from "@headlessui/react";
 export default function FeedItem({
     refreshFeeds, 
     setSelectedFeeds,
@@ -66,6 +66,13 @@ export default function FeedItem({
           </button>
         )}
        {selectedFeeds.includes(feed.link) && (
+            <Transition
+                      enter="transition-all duration-600"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="transition-opacity duration-300"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0">
             <div className="flex items-center space-x-2">
                 <input
                 type="range"
@@ -82,6 +89,7 @@ export default function FeedItem({
                 {feedStoryCounts[feed.link] ?? 10}
                 </span>
             </div>
+            </Transition>
         )}
       </div>
     )
