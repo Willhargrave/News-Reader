@@ -67,10 +67,10 @@ export default function FeedItem({
         )}
        {selectedFeeds.includes(feed.link) && (
             <Transition
-                      enter="transition-all duration-600"
+                      enter="transition-all duration-700"
                       enterFrom="opacity-0"
                       enterTo="opacity-100"
-                      leave="transition-opacity duration-300"
+                      leave="transition-opacity duration-700"
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0">
             <div className="flex items-center space-x-2">

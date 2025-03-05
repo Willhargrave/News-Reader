@@ -23,7 +23,8 @@ export async function POST(request: Request) {
         const articles = feed.items.slice(0, limit).map((item) => {
           const headline = item.title || "";
           const contentHtml = item.content || item.contentSnippet || "";
-          const cleanContent = htmlToText(contentHtml, { wordwrap: false });
+          const rawContent = htmlToText(contentHtml, { wordwrap: false });
+          const cleanContent = rawContent.replace(/\[.*?\]/g, "");
           return {
             feedTitle: feed.title, 
             headline,
