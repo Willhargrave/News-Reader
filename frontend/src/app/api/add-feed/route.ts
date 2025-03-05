@@ -17,10 +17,16 @@ export async function POST(request: Request) {
       const title = customTitle || feedData.title || "Untitled Feed";
       const category = (customCategory || feedData.category || "news").toLowerCase();
   
-      const existingFeed = await prisma.feed.findUnique({ where: { link: normalizedLink } });
-  
+      let existingFeed = await prisma.feed.findUnique({ where: { link: normalizedLink } });
       const session = await getServerSession(authOptions);
+  
       if (existingFeed) {
+        if (customTitle && customTitle !== existingFeed.title) {
+          existingFeed = await prisma.feed.update({
+            where: { link: normalizedLink },
+            data: { title },
+          });
+        }
         if (session && session.user?.name) {
           const user = await prisma.user.findUnique({ where: { username: session.user.name } });
           if (user) {
