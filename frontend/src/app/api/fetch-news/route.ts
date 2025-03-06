@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import Parser from "rss-parser";
+import prisma from "@/lib/prisma";
 import { htmlToText } from "html-to-text";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { Article } from "@/types";
 
 const parser = new Parser();
 
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
     });
     const session = await getServerSession(authOptions);
 
-    const feedArticlesMap: Record<string, any[]> = {};
+    const feedArticlesMap: Record<string, Article[]> = {};
     const defaultLimit = 10;
 
     for (const url of selectedFeeds) {
@@ -43,7 +45,7 @@ export async function POST(request: Request) {
             customTitle = userFeed.title;
           }
         }
-        const feedTitle = customTitle || feedMap[normalizedUrl] || feed.title;
+        const feedTitle = customTitle || feedMap[normalizedUrl] || feed.title || "Untilted Feed";
 
         const articles = feed.items.slice(0, limit).map((item) => {
           const headline = item.title || "";
@@ -65,7 +67,7 @@ export async function POST(request: Request) {
       }
     }
 
-    let finalArticles: any[] = [];
+    let finalArticles: Article[] = [];
     if (displayMode === "grouped") {
       for (const url of selectedFeeds) {
         finalArticles = finalArticles.concat(feedArticlesMap[url.toLowerCase()] || []);

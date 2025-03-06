@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
+import { UserFeed } from "@prisma/client";
 
-export async function GET(request: Request) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(_request: Request) {
   let removedFeedIds: string[] = [];
   const session = await getServerSession(authOptions);
   let user = null;
@@ -21,7 +23,7 @@ export async function GET(request: Request) {
     (feed) => !removedFeedIds.includes(feed.id)
   );
   
-  let customFeeds = [];
+  let customFeeds: UserFeed[] = [];
   if (session && session.user?.name && user) {
     customFeeds = await prisma.userFeed.findMany({
       where: { userId: user.id },
