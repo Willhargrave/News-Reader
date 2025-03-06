@@ -2,7 +2,7 @@
 
 import { FeedCategoryProps } from "@/types";
 import { Transition } from "@headlessui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FeedItem from "./FeedItem";
 
 
@@ -23,8 +23,14 @@ export default function FeedCategory({
     const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
         setIsOpen(e.currentTarget.open);
       };
+
+      useEffect(() => {
+        if (selectedFeeds.length === 0) {
+          setIsOpen(false);
+        }
+      }, [selectedFeeds]);
     
- 
+    
   
     const handleSelectAllForCategory = (categoryName: string, select: boolean) => {
         const feedsInCategory = groupedFeeds[categoryName] || [];

@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { FeedItemProps } from "@/types";
 import { Transition } from "@headlessui/react";
+import { useState } from "react";
 export default function FeedItem({
     refreshFeeds, 
     setSelectedFeeds,
@@ -12,6 +13,8 @@ export default function FeedItem({
     feed}: FeedItemProps) {
     
     const { data: session } = useSession();
+    const [confirmDelete, setConfirmDelete] = useState(false);
+
 
 
     const handleRemoveFeed = async (feedId: string, feedLink: string) => {
@@ -45,6 +48,17 @@ export default function FeedItem({
       const handleCountChange = (link: string, value: number) => {
         setFeedStoryCounts((prev) => ({ ...prev, [link]: value }));
       };
+
+      const onRemoveClick = () => {
+        if (confirmDelete) {
+          handleRemoveFeed(feed.id!, feed.link);
+          setConfirmDelete(false);
+        } else {
+          setConfirmDelete(true);
+          setTimeout(() => setConfirmDelete(false), 3000);
+        }
+      };
+    
     
     return (
         <div key={feed.link} className="flex items-center space-x-2 mb-1">
@@ -58,12 +72,16 @@ export default function FeedItem({
         <span className="cursor-default">{feed.title}</span>
         {session && feed.id && (
           <button
-            type="button"
-            onClick={() => handleRemoveFeed(feed.id!, feed.link)}
-            className="text-red-500 text-sm ml-2"
-          >
-            Remove
-          </button>
+          type="button"
+          onClick={onRemoveClick}
+          className={`text-sm ml-2 border rounded px-2 py-1 ${
+            confirmDelete
+              ? "bg-red-800 text-white"
+              : "bg-transparent text-red-500 hover:bg-red-100"
+          }`}
+        >
+          {confirmDelete ? "Confirm Delete" : "Remove"}
+        </button>
         )}
        {selectedFeeds.includes(feed.link) && (
             <Transition
