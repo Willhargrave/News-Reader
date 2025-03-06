@@ -31,11 +31,13 @@ export async function POST(request: Request) {
           const user = await prisma.user.findUnique({ where: { username: session.user.name } });
           if (user) {
             const removedFeeds: string[] = user.removedFeeds as string[] || [];
-            if (removedFeeds.includes(existingFeed.id)) {
-              const updatedRemovedFeeds = removedFeeds.filter(feedId => feedId !== existingFeed.id);
+            if (removedFeeds.includes(existingFeed!.id)) {
+              const updatedRemovedFeeds = removedFeeds.filter(
+                (feedId) => feedId !== existingFeed!.id
+              );
               await prisma.user.update({
                 where: { username: user.username },
-                data: { removedFeeds: updatedRemovedFeeds }
+                data: { removedFeeds: updatedRemovedFeeds },
               });
             }
           }
