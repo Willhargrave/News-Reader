@@ -41,11 +41,16 @@ export default function FeedForm({
         if (elapsed < minDelay) {
           setTimeout(() => {
             setLoading(false);
+            setSelectedFeeds([]);
+            setFeedStoryCounts({});
           }, minDelay - elapsed);
         } else {
           setLoading(false);
+          setSelectedFeeds([]);
+          setFeedStoryCounts({});
         }
       };
+      
       
   
     const groupedFeeds: Record<string, Feed[]> = {};
