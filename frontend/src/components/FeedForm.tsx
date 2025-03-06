@@ -24,6 +24,8 @@ export default function FeedForm({
     const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [globalCount, setGlobalCount] = useState<number>(10);
+    const [collapseCategories, setCollapseCategories] = useState(false);
+
   
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -39,16 +41,20 @@ export default function FeedForm({
         const elapsed = Date.now() - startTime;
         const minDelay = 1500;
         if (elapsed < minDelay) {
-          setTimeout(() => {
+            setTimeout(() => {
+              setLoading(false);
+              setSelectedFeeds([]);
+              setFeedStoryCounts({});
+              setCollapseCategories(true); 
+              setTimeout(() => setCollapseCategories(false), 100);
+            }, minDelay - elapsed);
+          } else {
             setLoading(false);
             setSelectedFeeds([]);
             setFeedStoryCounts({});
-          }, minDelay - elapsed);
-        } else {
-          setLoading(false);
-          setSelectedFeeds([]);
-          setFeedStoryCounts({});
-        }
+            setCollapseCategories(true);
+            setTimeout(() => setCollapseCategories(false), 100);
+          }
       };
       
       
@@ -116,6 +122,7 @@ export default function FeedForm({
               isAllSelected={isAllSelected}
               feedsInCategory={feedsInCategory}
               refreshFeeds={refreshFeeds}
+              collapse={collapseCategories}
             />
           );
         })}

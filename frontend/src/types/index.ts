@@ -47,6 +47,7 @@ export type AddFeedFormProps = {
     isAllSelected: boolean;
     feedsInCategory: Feed[];
     refreshFeeds: () => void;
+    collapase: boolean;
   }
 
   export interface FeedItemProps {

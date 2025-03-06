@@ -17,18 +17,19 @@ export default function FeedCategory({
     isAllSelected, 
     feedsInCategory, 
     refreshFeeds, 
+    collapse
 }: FeedCategoryProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleToggle = (e: React.SyntheticEvent<HTMLDetailsElement>) => {
         setIsOpen(e.currentTarget.open);
       };
-
-      useEffect(() => {
-        if (selectedFeeds.length === 0) {
-          setIsOpen(false);
+ 
+    useEffect(() => {
+        if (collapse) {
+            setIsOpen(false);
         }
-      }, [selectedFeeds]);
+    }, [collapse])
     
     
   
@@ -54,7 +55,7 @@ export default function FeedCategory({
 
      
    return (
-    <details key={categoryName} className="mb-4 cursor-pointer" onToggle={handleToggle}>
+    <details open={isOpen} key={categoryName} className="mb-4 cursor-pointer" onToggle={handleToggle}>
       <summary className="font-bold">{categoryName.toUpperCase()}</summary>
       <Transition
         show={isOpen}
