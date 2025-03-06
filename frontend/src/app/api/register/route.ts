@@ -10,6 +10,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing credentials' }, { status: 400 });
     }
 
+    if (password.length < 8) {
+        return NextResponse.json(
+          { error: "Password must be at least 8 characters long" },
+          { status: 400 }
+        );
+      }
+  
+
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) {
       return NextResponse.json({ error: 'Username already exists' }, { status: 400 });
