@@ -1,6 +1,7 @@
 "use client"
 import { Transition } from "@headlessui/react";
 import { ArticleListProps } from "../types";
+import ArticleItem from "./ArticleItem";
 
 export default function ArticleList({ articles, linksVisible, loading }: ArticleListProps) {
   if (loading) {
@@ -22,25 +23,7 @@ export default function ArticleList({ articles, linksVisible, loading }: Article
           enterFrom="opacity-0"
           enterTo="opacity-100"
         >
-          <div className="mb-6">
-            <h3 className="text-xl font-bold">
-              {article.feedTitle}: {article.headline}
-            </h3>
-            <p>{article.content}</p>
-            {linksVisible && (
-              <p className="mt-2">
-                <a
-                  href={article.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  Read more
-                </a>
-              </p>
-            )}
-            <hr className="mt-4 border-t border-gray-300" />
-          </div>
+        <ArticleItem article={article} linksVisible={linksVisible} />
         </Transition>
       ))}
     </div>
