@@ -92,3 +92,9 @@ export type BaseExplanationProps = {
 export type FeedAddExplanationProps = {
     initiallyExpanded?: boolean;
   };
+
+  export interface ArticleItemProps {
+    article: Article;
+    linksVisible: boolean;
+  }
+  
