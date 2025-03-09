@@ -86,7 +86,7 @@ export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
               type="url"
               value={feedUrl}
               onChange={(e) => setFeedUrl(e.target.value)}
-              className="w-full p-2 text-black border mb-2"
+              className="w-full p-2 border mb-2"
               placeholder="https://example.com/rss"
               required
             />
@@ -102,7 +102,7 @@ export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
         )}
         {stage === "preview" && (
           <form onSubmit={handleConfirm}>
-            <p className="text-black mb-2">
+            <p className="mb-2">
               The title of your RSS feed is:{" "}
               <input
                 type="text"
@@ -111,7 +111,7 @@ export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
                 className="border p-1"
               />
             </p>
-            <p className="text-black mb-2">
+            <p className="mb-2">
               The category of your RSS feed is:{" "}
               <input
                 type="text"
