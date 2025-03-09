@@ -48,30 +48,30 @@ export default function Home() {
       <Head>
         <title>Just The News</title>
       </Head>
-      <Transition
-        appear={true}
-        show={true}
-        enter="transition-opacity duration-1000"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-      >
-      <div className="min-h-screen p-8 font-sans">
-        <Header />
-        <SiteExplanation/>
-        <FeedForm
-          availableFeeds={availableFeeds}
-          setAvailableFeeds={setAvailableFeeds}
-          selectedFeeds={selectedFeeds}
-          setSelectedFeeds={setSelectedFeeds}
-          setArticles={setArticles}
-          setLoading={setLoading}
-          toggleLinks={toggleLinks}
-          loading={loading}
-          refreshFeeds={refreshFeeds}
-        />
-        <ArticleList articles={articles} linksVisible={linksVisible} loading={loading}/>
-      </div>
-      </Transition>
+        <Transition
+          appear={true}
+          show={true}
+          enter="transition-opacity duration-1000"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+        >
+          <div className="min-h-screen p-8 font-sans">
+            <Header />
+            <SiteExplanation />
+            <FeedForm
+              availableFeeds={availableFeeds}
+              setAvailableFeeds={setAvailableFeeds}
+              selectedFeeds={selectedFeeds}
+              setSelectedFeeds={setSelectedFeeds}
+              setArticles={setArticles}
+              setLoading={setLoading}
+              toggleLinks={toggleLinks}
+              loading={loading}
+              refreshFeeds={refreshFeeds}
+            />
+            <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
+          </div>
+        </Transition>
     </>
   );
 }
