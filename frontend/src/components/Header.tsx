@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
 
 export default function Header() {
 const { data: session } = useSession();
@@ -14,10 +15,17 @@ return(
 <header className="flex justify-between items-center mb-6">
 <h1 className="text-3xl font-bold">Just The News</h1>
 <button
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className="px-4 py-2 border rounded"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >
-      {mounted ? `Toggle ${theme === 'dark' ? 'Light' : 'Dark'} Mode` : 'Toggle Mode'}
+      {mounted ? (
+        theme === "dark" ? (
+          <SunIcon className="w-6 h-6 text-yellow-400" />
+        ) : (
+          <MoonIcon className="w-6 h-6 text-gray-800" />
+        )
+      ) : (
+        "Toggle Mode"
+      )}
     </button>
   {!session ? (
     <div className="flex space-x-4">
