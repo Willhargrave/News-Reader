@@ -37,7 +37,7 @@ export default function BaseExplanation({
       leaveFrom="opacity-100 transform scale-100"
       leaveTo="opacity-0 transform scale-95"
     >
-      <div className="p-4 mb-6 border rounded dark:text-white">
+      <div className="p-4 mb-6 border rounded">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">{title}</h2>
           <button
