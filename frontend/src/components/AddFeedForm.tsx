@@ -76,7 +76,7 @@ export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
     };
   
     return (
-      <div className="p-4 border rounded mb-4">
+      <div className="p-4 border rounded mb-4 shadow">
         {stage === "input" && (
           <form onSubmit={handlePreview}>
             <label className="block mb-2 font-bold">
