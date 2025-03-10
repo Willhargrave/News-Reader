@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useSession} from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { Dialog } from "@headlessui/react";
 import { SunIcon, MoonIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import UserSettingsModal from "./UserSettingsModal";
 export default function Header() {
@@ -57,12 +58,12 @@ return (
       </div>
     )}
     {showModal && (
-      <UserSettingsModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        defaultArticleCount={defaultArticleCount}
-        setDefaultArticleCount={setDefaultArticleCount}
-      />
+        <UserSettingsModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          defaultArticleCount={defaultArticleCount}
+          setDefaultArticleCount={setDefaultArticleCount}
+        />
     )}
   </header>
 );

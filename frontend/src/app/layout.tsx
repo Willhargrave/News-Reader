@@ -30,8 +30,8 @@ export default function RootLayout({
       <body 
       className={`${geistSans.variable} ${geistMono.variable} bg-background text-foreground antialiased transition-colors duration-500`}>
       <ThemeProvider>
-            <Providers>{children}</Providers>
-          </ThemeProvider>
+          <Providers>{children}</Providers>
+      </ThemeProvider>
       </body>
     </html>
   );
