@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { AddFeedFormProps } from "@/types";
 
-export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
+export default function AddFeedForm({ onFeedAdded, existingCategories }: AddFeedFormProps) {
     const [feedUrl, setFeedUrl] = useState("");
     const [previewTitle, setPreviewTitle] = useState("");
     const [previewCategory, setPreviewCategory] = useState("");
@@ -112,14 +112,22 @@ export default function AddFeedForm({ onFeedAdded }: AddFeedFormProps) {
               />
             </p>
             <p className="mb-2">
-              The category of your RSS feed is:{" "}
-              <input
-                type="text"
-                value={previewCategory}
-                onChange={(e) => setPreviewCategory(e.target.value)}
-                className="border p-1"
-              />
-            </p>
+            The category of your RSS feed is:{" "}
+            <input
+              type="text"
+              list="existingCategories"
+              // value={previewCategory}
+              placeholder=""
+              onChange={(e) => setPreviewCategory(e.target.value)}
+              className="border p-1"
+            />
+            <datalist id="existingCategories">
+              {existingCategories.map((cat) => (
+                <option key={cat} value={cat} />
+              ))}
+            </datalist>
+          </p>
+
             <div className="flex space-x-4">
               <button
                 type="submit"

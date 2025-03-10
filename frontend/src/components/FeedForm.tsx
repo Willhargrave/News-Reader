@@ -82,11 +82,12 @@ export default function FeedForm({
         {showAddFeedForm && (
           <div>
             <AddFeedForm
-              onFeedAdded={() => {
-                refreshFeeds();
-                setShowAddFeedForm(false);
-              }}
-            />
+            onFeedAdded={() => {
+            refreshFeeds();
+            setShowAddFeedForm(false);
+           }}
+            existingCategories={Object.keys(groupedFeeds)}
+             />
             <AddFeedExplanation initiallyExpanded={true} />
           </div>
         )}
