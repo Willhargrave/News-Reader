@@ -1,8 +1,9 @@
 "use client";
 
 import { Fragment} from "react";
-import { Dialog, DialogTitle, Transition } from "@headlessui/react";
+import { Dialog, DialogTitle, DialogPanel, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 
 interface UserSettingsModalProps {
@@ -18,6 +19,7 @@ export default function UserSettingsModal({
   defaultArticleCount,
   setDefaultArticleCount,
 }: UserSettingsModalProps) {
+const {theme} = useTheme();
   const router = useRouter();
 
   const handleDeleteAccount = async () => {
@@ -36,6 +38,10 @@ export default function UserSettingsModal({
       console.error("Error deleting account:", error);
     }
   };
+  const panelClasses = `inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left 
+    align-middle transition-all transform shadow-xl rounded-2xl ${
+      theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+    }`;
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -64,6 +70,7 @@ export default function UserSettingsModal({
           >
             &#8203;
           </span>
+
           <Transition
             as={Fragment}
             show={isOpen}
@@ -74,15 +81,14 @@ export default function UserSettingsModal({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-gray-800 shadow-xl rounded-2xl">
-              <DialogTitle
-                as="h3"
-                className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100"
-              >
+            <DialogPanel
+              className={panelClasses}
+            >
+              <DialogTitle as="h3" className="text-lg font-medium leading-6">
                 User Settings
               </DialogTitle>
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium mb-2">
                   Default Article Count
                 </label>
                 <input
@@ -99,14 +105,14 @@ export default function UserSettingsModal({
                 <button
                   type="button"
                   onClick={() => signOut()}
-                  className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-100"
+                  className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   Logout
                 </button>
                 <button
                   type="button"
                   onClick={handleDeleteAccount}
-                  className="px-4 py-2 border border-red-500 text-sm rounded hover:bg-red-100 dark:hover:bg-red-600 dark:text-gray-100"
+                  className="px-4 py-2 border border-red-500 text-sm rounded hover:bg-red-100 dark:hover:bg-red-600"
                 >
                   Delete Account
                 </button>
@@ -120,7 +126,7 @@ export default function UserSettingsModal({
                   Close
                 </button>
               </div>
-            </div>
+            </DialogPanel>
           </Transition>
         </div>
       </Dialog>
