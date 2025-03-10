@@ -24,7 +24,7 @@ const {theme} = useTheme();
 
   const handleDeleteAccount = async () => {
     try {
-      const res = await fetch("/api/delete-account", {
+      const res = await fetch("/api/delete-user", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
@@ -32,10 +32,10 @@ const {theme} = useTheme();
         await signOut();
         router.push("/");
       } else {
-        console.error("Failed to delete account");
+        console.error("Failed to delete user");
       }
     } catch (error) {
-      console.error("Error deleting account:", error);
+      console.error("Error deleting user:", error);
     }
   };
   const panelClasses = `inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left 

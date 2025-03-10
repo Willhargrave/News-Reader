@@ -19,7 +19,7 @@ model UserFeed {
   title    String
   link     String @unique
   userId   String
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   category String @default("news")
 }
 
