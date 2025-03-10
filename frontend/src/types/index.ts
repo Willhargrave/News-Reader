@@ -34,6 +34,7 @@ export type FeedFormProps = {
 
 export type AddFeedFormProps = {
     onFeedAdded: () => void;
+    existingCategories: string[];
   };
 
   export interface FeedCategoryProps {
