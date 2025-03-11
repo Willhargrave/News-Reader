@@ -81,6 +81,7 @@ export default function FeedForm({
         </button>
         {showAddFeedForm && (
           <div>
+            <AddFeedExplanation initiallyExpanded={true} />
             <AddFeedForm
             onFeedAdded={() => {
             refreshFeeds();
@@ -88,7 +89,6 @@ export default function FeedForm({
            }}
             existingCategories={Object.keys(groupedFeeds)}
              />
-            <AddFeedExplanation initiallyExpanded={true} />
           </div>
         )}
         {selectedFeeds.length > 1 && (

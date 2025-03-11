@@ -99,3 +99,9 @@ export type FeedAddExplanationProps = {
     linksVisible: boolean;
   }
   
+  export interface UserSettingsModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    defaultArticleCount: number;
+    setDefaultArticleCount: (count: number) => void;
+  }

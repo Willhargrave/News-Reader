@@ -109,6 +109,7 @@ export default function AddFeedForm({ onFeedAdded, existingCategories }: AddFeed
                 value={previewTitle}
                 onChange={(e) => setPreviewTitle(e.target.value)}
                 className="border p-1"
+                required
               />
             </p>
             <p className="mb-2">
@@ -120,11 +121,13 @@ export default function AddFeedForm({ onFeedAdded, existingCategories }: AddFeed
               placeholder=""
               onChange={(e) => setPreviewCategory(e.target.value)}
               className="border p-1"
+              required
             />
             <datalist id="existingCategories">
-              {existingCategories.map((cat) => (
-                <option key={cat} value={cat} />
-              ))}
+            {existingCategories.map((cat) => {
+            const capitalized = cat.charAt(0).toUpperCase() + cat.slice(1);
+            return <option key={cat} value={capitalized} />;
+            })}
             </datalist>
           </p>
 
