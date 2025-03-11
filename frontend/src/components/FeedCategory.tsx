@@ -86,7 +86,8 @@ export default function FeedCategory({
           feedStoryCounts={feedStoryCounts} 
           setFeedStoryCounts={setFeedStoryCounts}
            selectedFeeds={selectedFeeds}
-           feed={feed}/>
+           feed={feed}
+           globalCount={globalCount}/>
         ))}
       </div>
     </Transition>

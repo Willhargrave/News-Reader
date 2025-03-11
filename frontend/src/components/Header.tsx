@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { SunIcon, MoonIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import UserSettingsModal from "./UserSettingsModal";
-export default function Header() {
+export default function Header({defaultArticleCount, setDefaultArticleCount}) {
 const { data: session } = useSession();
 const {theme, setTheme} = useTheme()
 const [mounted, setMounted] = useState(false)
 const [showModal, setShowModal] = useState(false);
-const [defaultArticleCount, setDefaultArticleCount] = useState(10);
+
 
 
 useEffect(() => setMounted(true), [])

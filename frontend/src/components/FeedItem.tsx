@@ -10,6 +10,7 @@ export default function FeedItem({
     feedStoryCounts, 
     setFeedStoryCounts,
     selectedFeeds,
+    globalCount,
     feed}: FeedItemProps) {
     
     const { data: session } = useSession();
@@ -96,7 +97,7 @@ export default function FeedItem({
                 type="range"
                 min={1}
                 max={20} 
-                value={feedStoryCounts[feed.link] ?? 10}
+                value={feedStoryCounts[feed.link] ?? globalCount}
                 onChange={(e) =>
                     handleCountChange(feed.link, Number(e.target.value))
                 }
@@ -104,7 +105,7 @@ export default function FeedItem({
                 title="Stories from this feed"
                 />
                 <span className="w-8 text-center">
-                {feedStoryCounts[feed.link] ?? 10}
+                {feedStoryCounts[feed.link] ?? globalCount}
                 </span>
             </div>
             </Transition>
