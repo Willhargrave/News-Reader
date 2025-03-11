@@ -19,11 +19,12 @@ export default function FeedForm({
   setLoading,
   toggleLinks,
   loading,
+  globalCount,
+  setGlobalCount
 }: FeedFormProps) {
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
     const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
-    const [globalCount, setGlobalCount] = useState<number>(10);
     const [collapseCategories, setCollapseCategories] = useState(false);
 
   

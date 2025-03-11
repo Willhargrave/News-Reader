@@ -29,4 +29,5 @@ model User {
   password     String
   removedFeeds Json       @default("[]")
   userFeeds    UserFeed[]
+  defaultArticleCount Int        @default(10)
 }

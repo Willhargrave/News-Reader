@@ -16,10 +16,17 @@ export default function Home() {
   const { data: session } = useSession();
   const [availableFeeds, setAvailableFeeds] = useState<Feed[]>([]);
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
+  const [defaultArticleCount, setDefaultArticleCount] = useState(10);
+  const [globalCount, setGlobalCount] = useState(defaultArticleCount);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
   const toggleLinks = () => setLinksVisible((prev) => !prev);
+
+  useEffect(() => {
+    setGlobalCount(defaultArticleCount);
+  }, [defaultArticleCount]);
+  
   
 
   const refreshFeeds = useCallback(() => {
@@ -41,6 +48,19 @@ export default function Home() {
     refreshFeeds();
   }, [refreshFeeds]);
 
+  useEffect(() => {
+    async function fetchSettings() {
+      const res = await fetch("/api/get-settings");
+      const data = await res.json();
+      if (data.defaultArticleCount) {
+        setDefaultArticleCount(data.defaultArticleCount);
+        setGlobalCount(data.defaultArticleCount);
+      }
+    }
+    fetchSettings();
+  }, []);
+  
+
 
   return (
     <>
@@ -56,7 +76,7 @@ export default function Home() {
           enterTo="opacity-100"
         >
           <div className="min-h-screen p-8 font-sans">
-            <Header />
+            <Header defaultArticleCount={defaultArticleCount} setDefaultArticleCount={setDefaultArticleCount}/>
             <SiteExplanation />
             <FeedForm
               availableFeeds={availableFeeds}
@@ -68,6 +88,8 @@ export default function Home() {
               toggleLinks={toggleLinks}
               loading={loading}
               refreshFeeds={refreshFeeds}
+              globalCount={globalCount}
+              setGlobalCount={setGlobalCount}
             />
             <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
           </div>
