@@ -13,7 +13,7 @@ export default function UserSettingsModal({
   defaultArticleCount,
   setDefaultArticleCount,
 }: UserSettingsModalProps) {
-const {theme} = useTheme();
+  const {theme} = useTheme();
   const router = useRouter();
 
   const handleDeleteAccount = async () => {
@@ -30,6 +30,23 @@ const {theme} = useTheme();
       }
     } catch (error) {
       console.error("Error deleting user:", error);
+    }
+  };
+
+  const handleConfirmSettings = async () => {
+    try {
+      const res = await fetch("/api/update-settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ defaultArticleCount }),
+      });
+      if (res.ok) {
+        onClose();
+      } else {
+        console.error("Error updating settings");
+      }
+    } catch (error) {
+      console.error("Error updating settings:", error);
     }
   };
   const panelClasses = `inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left 
@@ -95,6 +112,16 @@ const {theme} = useTheme();
                   className="w-full border rounded p-2 dark:bg-gray-700 dark:text-gray-100"
                 />
               </div>
+              <div className="mt-4 flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={handleConfirmSettings}
+                  className="px-4 py-2 border border-blue-500 text-sm rounded hover:bg-blue-100 dark:hover:bg-blue-600"
+                >
+                  Confirm
+                </button>
+              </div>
+
               <div className="mt-6 flex justify-end space-x-4">
                 <button
                   type="button"
