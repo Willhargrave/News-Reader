@@ -5,13 +5,7 @@ import { Dialog, DialogTitle, DialogPanel, Transition } from "@headlessui/react"
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
-
-interface UserSettingsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  defaultArticleCount: number;
-  setDefaultArticleCount: (count: number) => void;
-}
+import { UserSettingsModalProps } from "@/types";
 
 export default function UserSettingsModal({
   isOpen,
