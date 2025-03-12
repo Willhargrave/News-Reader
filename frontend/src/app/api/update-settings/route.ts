@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function POST(request: Request) {
+
   const { defaultArticleCount } = await request.json();
   const session = await getServerSession(authOptions);
   if (!session || !session.user?.name) {
@@ -14,6 +15,7 @@ export async function POST(request: Request) {
       where: { username: session.user.name },
       data: { defaultArticleCount },
     });
+    
     return NextResponse.json({
       message: "Settings updated",
       defaultArticleCount: user.defaultArticleCount,
