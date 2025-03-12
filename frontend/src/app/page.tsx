@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback} from "react";
+import { useState, useEffect, useCallback, useReducer} from "react";
 import { Transition } from "@headlessui/react";
 import Head from "next/head";
 import Header from "../components/Header";
@@ -10,12 +10,14 @@ import SiteExplanation from "@/components/SiteExplanation";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
+import { FeedCountsProvider } from "./providers/FeedCountContext";
 
 export default function Home() {
   
   const { data: session } = useSession();
   const [availableFeeds, setAvailableFeeds] = useState<Feed[]>([]);
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
+  const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
   const [defaultArticleCount, setDefaultArticleCount] = useState(10);
   const [globalCount, setGlobalCount] = useState(defaultArticleCount);
   const [articles, setArticles] = useState<Article[]>([]);
@@ -23,11 +25,6 @@ export default function Home() {
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
   const toggleLinks = () => setLinksVisible((prev) => !prev);
 
-  useEffect(() => {
-    setGlobalCount(defaultArticleCount);
-  }, [defaultArticleCount]);
-  
-  
 
   const refreshFeeds = useCallback(() => {
     if (session) {
@@ -68,6 +65,7 @@ export default function Home() {
       <Head>
         <title>Just The News</title>
       </Head>
+      <FeedCountsProvider>
         <Transition
           appear={true}
           show={true}
@@ -89,11 +87,14 @@ export default function Home() {
               loading={loading}
               refreshFeeds={refreshFeeds}
               globalCount={globalCount}
+              feedStoryCounts={feedStoryCounts}
+              setFeedStoryCounts={setFeedStoryCounts}
               setGlobalCount={setGlobalCount}
             />
             <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
           </div>
-        </Transition>
+          </Transition>
+          </FeedCountsProvider>
     </>
   );
 }

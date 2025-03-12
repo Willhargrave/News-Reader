@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { FeedItemProps } from "@/types";
 import { Transition } from "@headlessui/react";
 import { useState } from "react";
+import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 export default function FeedItem({
     refreshFeeds, 
     setSelectedFeeds,
@@ -11,10 +12,13 @@ export default function FeedItem({
     setFeedStoryCounts,
     selectedFeeds,
     globalCount,
+    state,
     feed}: FeedItemProps) {
     
     const { data: session } = useSession();
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const {dispatch, getCountForFeed} = useFeedCountsContext();
+    const currentCount = getCountForFeed(feed.id)
 
 
 
@@ -97,16 +101,13 @@ export default function FeedItem({
                 type="range"
                 min={1}
                 max={20} 
-                value={feedStoryCounts[feed.link] ?? globalCount}
-                onChange={(e) =>
-                    handleCountChange(feed.link, Number(e.target.value))
-                }
-                className="w-32 transition-all duration-400 ease-in-out"
-                title="Stories from this feed"
-                />
-                <span className="w-8 text-center">
-                {feedStoryCounts[feed.link] ?? globalCount}
-                </span>
+                value={currentCount}
+                onChange={e => dispatch({
+                  type: 'UPDATE_SINGLE',
+                  payload: { feedId: feed.id, value: Number(e.target.value) }
+                })}
+              />
+              <span>{currentCount}</span>
             </div>
             </Transition>
         )}

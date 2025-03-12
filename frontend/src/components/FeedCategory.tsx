@@ -17,7 +17,8 @@ export default function FeedCategory({
     isAllSelected, 
     feedsInCategory, 
     refreshFeeds, 
-    collapse
+    collapse,
+    state,
 }: FeedCategoryProps) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -87,7 +88,9 @@ export default function FeedCategory({
           setFeedStoryCounts={setFeedStoryCounts}
            selectedFeeds={selectedFeeds}
            feed={feed}
-           globalCount={globalCount}/>
+           globalCount={globalCount}
+           state={state}/>
+          
         ))}
       </div>
     </Transition>
