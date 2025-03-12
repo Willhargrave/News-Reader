@@ -47,11 +47,16 @@ export default function Home() {
 
   useEffect(() => {
     async function fetchSettings() {
-      const res = await fetch("/api/get-settings");
-      const data = await res.json();
-      if (data.defaultArticleCount) {
-        setDefaultArticleCount(data.defaultArticleCount);
-        setGlobalCount(data.defaultArticleCount);
+      try {
+        const res = await fetch("/api/get-settings");
+        const data = await res.json();
+        console.log("Fetched settings:", data);
+        if (data.defaultArticleCount !== undefined) {
+          setDefaultArticleCount(data.defaultArticleCount);
+          setGlobalCount(data.defaultArticleCount);
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error);
       }
     }
     fetchSettings();

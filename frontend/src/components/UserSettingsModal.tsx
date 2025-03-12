@@ -4,6 +4,7 @@ import { Fragment} from "react";
 import { Dialog, DialogTitle, DialogPanel, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { UserSettingsModalProps } from "@/types";
 import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
@@ -14,6 +15,7 @@ export default function UserSettingsModal({
   defaultArticleCount,
   setDefaultArticleCount,
 }: UserSettingsModalProps) {
+  const { data: session } = useSession();
   const {theme} = useTheme();
   const router = useRouter();
   const {state, dispatch} = useFeedCountsContext();
@@ -40,7 +42,7 @@ export default function UserSettingsModal({
       const res = await fetch("/api/update-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ defaultArticleCount }),
+        body: JSON.stringify({ defaultArticleCount: state.defaultCount }),
       });
       if (res.ok) {
         onClose();
@@ -97,8 +99,8 @@ export default function UserSettingsModal({
             <DialogPanel
               className={panelClasses}
             >
-              <DialogTitle as="h3" className="text-lg font-medium leading-6">
-                User Settings
+                <DialogTitle as="h3" className="text-lg font-medium leading-6">
+                User Settings for {session?.user?.name || "User"}
               </DialogTitle>
               <div className="mt-4">
                 <label className="block text-sm font-medium mb-2">
