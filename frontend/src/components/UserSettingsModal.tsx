@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import { UserSettingsModalProps } from "@/types";
+import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 
 export default function UserSettingsModal({
   isOpen,
@@ -15,6 +16,7 @@ export default function UserSettingsModal({
 }: UserSettingsModalProps) {
   const {theme} = useTheme();
   const router = useRouter();
+  const {state, dispatch} = useFeedCountsContext();
 
   const handleDeleteAccount = async () => {
     try {
@@ -105,10 +107,11 @@ export default function UserSettingsModal({
                 <input
                   type="number"
                   min={1}
-                  value={defaultArticleCount}
-                  onChange={(e) =>
-                    setDefaultArticleCount(Number(e.target.value))
-                  }
+                  value={state.defaultCount}
+                  onChange={e => dispatch({
+                    type: 'SET_DEFAULT',
+                    payload: Number(e.target.value)
+                  })}
                   className="w-full border rounded p-2 dark:bg-gray-700 dark:text-gray-100"
                 />
               </div>

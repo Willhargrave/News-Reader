@@ -1,13 +1,10 @@
 "use client";
 
-import { GlobalFeedCounterProps } from "@/types";
+import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 
-export default function GlobalFeedCounter({
-  globalCount,
-  setGlobalCount,
-  selectedFeeds,
-  setFeedStoryCounts,
-}: GlobalFeedCounterProps){
+
+export default function GlobalFeedCounter(){
+  const {state, dispatch} = useFeedCountsContext();
     return (
         <div className="mb-4">
           <label htmlFor="globalCounter" className="block font-bold mb-1">
@@ -19,22 +16,15 @@ export default function GlobalFeedCounter({
               type="range"
               min={1}
               max={20} 
-              value={globalCount}
-              onChange={(e) => {
-                const newCount = Number(e.target.value);
-                setGlobalCount(newCount);
-                setFeedStoryCounts((prev) => {
-                  const updated = { ...prev };
-                  selectedFeeds.forEach((feedLink) => {
-                    updated[feedLink] = newCount;
-                  });
-                  return updated;
-                });
-              }}
+              value={state.globalCount}
+              onChange={e => dispatch({
+                type: 'UPDATE_GLOBAL',
+                payload: Number(e.target.value)
+              })}
               className="w-1/2 transition-all duration-300 ease-in-out"
               title="Set story count for all selected feeds"
             />
-            <span className="w-8 text-center">{globalCount}</span>
+            <span className="w-8 text-center">{state.globalCount}</span>
           </div>
         </div>
       );

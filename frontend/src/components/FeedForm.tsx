@@ -20,10 +20,12 @@ export default function FeedForm({
   toggleLinks,
   loading,
   globalCount,
-  setGlobalCount
+  setGlobalCount,
+  feedStoryCounts,
+  setFeedStoryCounts,
+  state
 }: FeedFormProps) {
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
-    const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [collapseCategories, setCollapseCategories] = useState(false);
 
@@ -125,6 +127,7 @@ export default function FeedForm({
               feedsInCategory={feedsInCategory}
               refreshFeeds={refreshFeeds}
               collapse={collapseCategories}
+              state={state}
             />
           );
         })}
