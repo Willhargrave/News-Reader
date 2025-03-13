@@ -70,7 +70,7 @@ export default function Home() {
       <Head>
         <title>Just The News</title>
       </Head>
-      <FeedCountsProvider>
+      <FeedCountsProvider initialDefault={defaultArticleCount}>
         <Transition
           appear={true}
           show={true}

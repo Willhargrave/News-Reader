@@ -6,7 +6,7 @@ interface FeedState {
   }
 
   type FeedAction =
-  | { type: 'SET_DEFAULT'; payload: number }
+  | { type: 'SET_DEFAULT'; payload: number; selectedFeeds: string[] }
   | { type: 'UPDATE_GLOBAL'; payload: number }
   | { type: 'UPDATE_SINGLE'; payload: { feedId: string; value: number } }
   | { type: 'SELECT_FEEDS'; payload: string[] };

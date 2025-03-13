@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useEffect } from "react";
 import { useFeedCounts } from "@/hooks/useFeedCount";
 
 interface FeedCountsContextType {
@@ -9,8 +9,19 @@ interface FeedCountsContextType {
 
 const FeedCountsContext = createContext<FeedCountsContextType | undefined>(undefined);
 
-export const FeedCountsProvider = ({ children }: { children: ReactNode }) => {
-  const feedCounts = useFeedCounts(10);
+interface FeedCountsProviderProps {
+  children: ReactNode;
+  initialDefault: number;
+}
+
+export const FeedCountsProvider = ({ children, initialDefault }: FeedCountsProviderProps) => {
+  const feedCounts = useFeedCounts(initialDefault);
+  const { dispatch, state } = feedCounts;
+
+  useEffect(() => {
+    dispatch({ type: "SET_DEFAULT", payload: initialDefault, selectedFeeds: state.selectedFeeds });
+  }, [initialDefault, dispatch, state.selectedFeeds]);
+
   return (
     <FeedCountsContext.Provider value={feedCounts}>
       {children}
