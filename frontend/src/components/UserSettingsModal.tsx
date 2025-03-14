@@ -1,24 +1,17 @@
 "use client";
-
-import { Fragment} from "react";
+import { Fragment } from "react";
 import { Dialog, DialogTitle, DialogPanel, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { UserSettingsModalProps } from "@/types";
 import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
+import { useSession } from "next-auth/react";
 
-export default function UserSettingsModal({
-  isOpen,
-  onClose,
-  defaultArticleCount,
-  setDefaultArticleCount,
-}: UserSettingsModalProps) {
+export default function UserSettingsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void; }) {
   const { data: session } = useSession();
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const router = useRouter();
-  const {state, dispatch} = useFeedCountsContext();
+  const { state, dispatch } = useFeedCountsContext();
 
   const handleDeleteAccount = async () => {
     try {
@@ -53,6 +46,7 @@ export default function UserSettingsModal({
       console.error("Error updating settings:", error);
     }
   };
+
   const panelClasses = `inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left 
     align-middle transition-all transform shadow-xl rounded-2xl ${
       theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
@@ -60,11 +54,7 @@ export default function UserSettingsModal({
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="fixed inset-0 z-10 overflow-y-auto"
-        onClose={onClose}
-      >
+      <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={onClose}>
         <div className="min-h-screen px-4 text-center">
           <Transition
             as={Fragment}
@@ -78,14 +68,9 @@ export default function UserSettingsModal({
           >
             <div className="fixed inset-0 bg-black opacity-30" />
           </Transition>
-
-          <span
-            className="inline-block h-screen align-middle"
-            aria-hidden="true"
-          >
+          <span className="inline-block h-screen align-middle" aria-hidden="true">
             &#8203;
           </span>
-
           <Transition
             as={Fragment}
             show={isOpen}
@@ -96,10 +81,8 @@ export default function UserSettingsModal({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <DialogPanel
-              className={panelClasses}
-            >
-                <DialogTitle as="h3" className="text-lg font-medium leading-6">
+            <DialogPanel className={panelClasses}>
+              <DialogTitle as="h3" className="text-lg font-medium leading-6">
                 User Settings for {session?.user?.name || "User"}
               </DialogTitle>
               <div className="mt-4">
@@ -110,10 +93,13 @@ export default function UserSettingsModal({
                   type="number"
                   min={1}
                   value={state.defaultCount}
-                  onChange={e => dispatch({
-                    type: 'SET_DEFAULT',
-                    payload: Number(e.target.value)
-                  })}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "SET_DEFAULT",
+                      payload: Number(e.target.value),
+                      selectedFeeds: state.selectedFeeds,
+                    })
+                  }
                   className="w-full border rounded p-2 dark:bg-gray-700 dark:text-gray-100"
                 />
               </div>
@@ -126,7 +112,6 @@ export default function UserSettingsModal({
                   Confirm
                 </button>
               </div>
-
               <div className="mt-6 flex justify-end space-x-4">
                 <button
                   type="button"

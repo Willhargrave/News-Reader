@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useReducer} from "react";
+import { useState, useEffect, useCallback} from "react";
 import { Transition } from "@headlessui/react";
 import Head from "next/head";
 import Header from "../components/Header";
@@ -10,20 +10,20 @@ import SiteExplanation from "@/components/SiteExplanation";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
-import { FeedCountsProvider } from "./providers/FeedCountContext";
+import { FeedCountsProvider} from "./providers/FeedCountContext";
 
 export default function Home() {
   
   const { data: session } = useSession();
   const [availableFeeds, setAvailableFeeds] = useState<Feed[]>([]);
   const [selectedFeeds, setSelectedFeeds] = useState<string[]>([]);
-  const [feedStoryCounts, setFeedStoryCounts] = useState<Record<string, number>>({});
-  const [defaultArticleCount, setDefaultArticleCount] = useState(10);
-  const [globalCount, setGlobalCount] = useState(defaultArticleCount);
+  const [initialCounter, setInitialCounter] = useState<number | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [linksVisible, setLinksVisible] = useState<boolean>(false);
   const toggleLinks = () => setLinksVisible((prev) => !prev);
+
+ 
 
 
   const refreshFeeds = useCallback(() => {
@@ -52,8 +52,7 @@ export default function Home() {
         const data = await res.json();
         console.log("Fetched settings:", data);
         if (data.defaultArticleCount !== undefined) {
-          setDefaultArticleCount(data.defaultArticleCount);
-          setGlobalCount(data.defaultArticleCount);
+          setInitialCounter(data.defaultArticleCount);
         }
       } catch (error) {
         console.error("Error fetching settings:", error);
@@ -70,8 +69,8 @@ export default function Home() {
       <Head>
         <title>Just The News</title>
       </Head>
-      <FeedCountsProvider initialDefault={defaultArticleCount}>
-        <Transition
+      <FeedCountsProvider initialDefault={initialCounter}>
+      <Transition
           appear={true}
           show={true}
           enter="transition-opacity duration-1000"
@@ -79,7 +78,7 @@ export default function Home() {
           enterTo="opacity-100"
         >
           <div className="min-h-screen p-8 font-sans">
-            <Header defaultArticleCount={defaultArticleCount} setDefaultArticleCount={setDefaultArticleCount}/>
+            <Header/>
             <SiteExplanation />
             <FeedForm
               availableFeeds={availableFeeds}
@@ -91,10 +90,6 @@ export default function Home() {
               toggleLinks={toggleLinks}
               loading={loading}
               refreshFeeds={refreshFeeds}
-              globalCount={globalCount}
-              feedStoryCounts={feedStoryCounts}
-              setFeedStoryCounts={setFeedStoryCounts}
-              setGlobalCount={setGlobalCount}
             />
             <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
           </div>

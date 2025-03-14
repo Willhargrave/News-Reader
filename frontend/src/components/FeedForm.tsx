@@ -9,6 +9,7 @@ import AddFeedExplanation from "./AddFeedExplanation";
 import FeedCategory from "./FeedCategory";
 import SelectDisplayTypeRadio from "./SelectDisplayType";
 import GlobalFeedCounter from "./GlobalFeedCounter";
+import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 
 export default function FeedForm({
   availableFeeds,
@@ -19,48 +20,47 @@ export default function FeedForm({
   setLoading,
   toggleLinks,
   loading,
-  globalCount,
-  setGlobalCount,
-  feedStoryCounts,
-  setFeedStoryCounts,
-  state
 }: FeedFormProps) {
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [collapseCategories, setCollapseCategories] = useState(false);
+    const { state: feedCountsState, dispatch } = useFeedCountsContext();
 
-  
+
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        const startTime = Date.now();
-        const res = await fetch("/api/fetch-news", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ selectedFeeds, feedStoryCounts, displayMode }),
-        });
-        const data = await res.json();
-        setArticles(data.articles || []);
-        const elapsed = Date.now() - startTime;
-        const minDelay = 1500;
-        if (elapsed < minDelay) {
-            setTimeout(() => {
-              setLoading(false);
-              setSelectedFeeds([]);
-              setFeedStoryCounts({});
-              setCollapseCategories(true); 
-              setTimeout(() => setCollapseCategories(false), 100);
-            }, minDelay - elapsed);
-          } else {
-            setLoading(false);
-            setSelectedFeeds([]);
-            setFeedStoryCounts({});
-            setCollapseCategories(true);
-            setTimeout(() => setCollapseCategories(false), 100);
-          }
-      };
-      
-      
+      e.preventDefault();
+      setLoading(true);
+      const startTime = Date.now();
+      const res = await fetch("/api/fetch-news", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          selectedFeeds, 
+          feedStoryCounts: feedCountsState.feedCounts,
+          defaultCount: feedCountsState.defaultCount,
+          displayMode,
+        }),
+      });
+      const data = await res.json();
+      setArticles(data.articles || []);
+      const elapsed = Date.now() - startTime;
+      const minDelay = 1500;
+      if (elapsed < minDelay) {
+        setTimeout(() => {
+          setLoading(false);
+          setSelectedFeeds([]);
+          dispatch({ type: 'RESET_FEED_COUNTS' });
+          setCollapseCategories(true);
+          setTimeout(() => setCollapseCategories(false), 100);
+        }, minDelay - elapsed);
+      } else {
+        setLoading(false);
+        setSelectedFeeds([]);
+        dispatch({ type: 'RESET_FEED_COUNTS' });
+        setCollapseCategories(true);
+        setTimeout(() => setCollapseCategories(false), 100);
+      }
+    };
   
     const groupedFeeds: Record<string, Feed[]> = {};
     if (Array.isArray(availableFeeds)) {
@@ -86,48 +86,46 @@ export default function FeedForm({
           <div>
             <AddFeedExplanation initiallyExpanded={true} />
             <AddFeedForm
-            onFeedAdded={() => {
-            refreshFeeds();
-            setShowAddFeedForm(false);
-           }}
-            existingCategories={Object.keys(groupedFeeds)}
-             />
+              onFeedAdded={() => {
+                refreshFeeds();
+                setShowAddFeedForm(false);
+              }}
+              existingCategories={Object.keys(groupedFeeds)}
+            />
           </div>
         )}
         {selectedFeeds.length > 1 && (
-            <Transition
+          <Transition
             enter="transition-opacity duration-700"
             enterFrom="opacity-0"
             enterTo="opacity-100"
             leave="transition-opacity duration-700"
             leaveFrom="opacity-100"
-            leaveTo="opacity-0">
+            leaveTo="opacity-0"
+          >
             <div>
-            <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
-            <GlobalFeedCounter globalCount={globalCount} setGlobalCount={setGlobalCount} selectedFeeds={selectedFeeds} setFeedStoryCounts={setFeedStoryCounts}/>
-             </div>
-           </Transition>
+              <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
+              <GlobalFeedCounter />
+            </div>
+          </Transition>
         )}
         {Object.keys(groupedFeeds).map((categoryName) => {
           const feedsInCategory = groupedFeeds[categoryName] || [];
           const isAllSelected = feedsInCategory.every((feed) =>
-            selectedFeeds.includes(feed.link)
+            selectedFeeds.includes(feed.link.toLowerCase())
           );
           return (
             <FeedCategory
               key={categoryName}
               selectedFeeds={selectedFeeds}
               setSelectedFeeds={setSelectedFeeds}
-              feedStoryCounts={feedStoryCounts}
-              setFeedStoryCounts={setFeedStoryCounts}
               groupedFeeds={groupedFeeds}
-              globalCount={globalCount}
               categoryName={categoryName}
               isAllSelected={isAllSelected}
               feedsInCategory={feedsInCategory}
               refreshFeeds={refreshFeeds}
+              state={feedCountsState}
               collapse={collapseCategories}
-              state={state}
             />
           );
         })}
@@ -151,4 +149,5 @@ export default function FeedForm({
       </div>
     );
   }
+  
   
