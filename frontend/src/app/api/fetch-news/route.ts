@@ -13,7 +13,11 @@ const parser = new Parser();
 export async function POST(request: Request) {
   try {
     console.log("fetch-news endpoint reached");
-    const { selectedFeeds, feedStoryCounts, displayMode } = await request.json();
+    const { selectedFeeds, feedStoryCounts, displayMode, defaultCount, globalCount } = await request.json();
+    console.log("selectedFeeds:", selectedFeeds);
+    console.log("feedStoryCounts:", feedStoryCounts);
+    console.log("displayMode:", displayMode);
+
     if (!selectedFeeds || !Array.isArray(selectedFeeds) || selectedFeeds.length === 0) {
       return NextResponse.json({ error: "No feeds selected" }, { status: 400 });
     }
@@ -25,17 +29,20 @@ export async function POST(request: Request) {
     allFeeds.forEach((feed: { title: string; link: string }) => {
       feedMap[feed.link.toLowerCase()] = feed.title;
     });
+
     const session = await getServerSession(authOptions);
 
     const feedArticlesMap: Record<string, Article[]> = {};
-    const defaultLimit = 10;
 
     for (const url of selectedFeeds) {
       const normalizedUrl = url.toLowerCase();
+      const validatedDefault = Math.max(1, Math.min(globalCount || defaultCount || 10, 20));
       const limit =
-        feedStoryCounts && feedStoryCounts[url]
-          ? Number(feedStoryCounts[url])
-          : defaultLimit;
+      feedStoryCounts?.[normalizedUrl] !== undefined
+        ? Number(feedStoryCounts[normalizedUrl])
+        : validatedDefault;
+    
+      console.log(`For URL "${normalizedUrl}", using limit: ${limit}`);
       try {
         const feed = await parser.parseURL(normalizedUrl);
         let customTitle = "";
@@ -45,7 +52,7 @@ export async function POST(request: Request) {
             customTitle = userFeed.title;
           }
         }
-        const feedTitle = customTitle || feedMap[normalizedUrl] || feed.title || "Untilted Feed";
+        const feedTitle = customTitle || feedMap[normalizedUrl] || feed.title || "Untitled Feed";
 
         const articles = feed.items.slice(0, limit).map((item) => {
           const headline = item.title || "";
@@ -60,6 +67,7 @@ export async function POST(request: Request) {
             pubDate: item.pubDate || item.isoDate || null,
           };
         });
+        console.log(`Fetched ${articles.length} articles for feed "${normalizedUrl}"`);
         feedArticlesMap[normalizedUrl] = articles;
       } catch (error) {
         console.error("Error parsing feed:", normalizedUrl, error);
@@ -89,7 +97,8 @@ export async function POST(request: Request) {
         finalArticles = finalArticles.concat(feedArticlesMap[url.toLowerCase()] || []);
       }
     }
-
+    
+    console.log("Total final articles:", finalArticles.length);
     return NextResponse.json({ articles: finalArticles });
   } catch (error) {
     console.error("Error in fetch-news endpoint:", error);

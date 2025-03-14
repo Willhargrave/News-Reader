@@ -8,51 +8,46 @@ import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 export default function FeedItem({
     refreshFeeds, 
     setSelectedFeeds,
-    feedStoryCounts, 
-    setFeedStoryCounts,
     selectedFeeds,
-    globalCount,
-    state,
     feed}: FeedItemProps) {
     
     const { data: session } = useSession();
     const [confirmDelete, setConfirmDelete] = useState(false);
-    const {dispatch, getCountForFeed} = useFeedCountsContext();
-    const currentCount = getCountForFeed(feed.id)
+    const {dispatch, getCountForFeed, state} = useFeedCountsContext();
+    const currentCount = getCountForFeed(feed.link.toLowerCase());
+   
 
 
 
     const handleRemoveFeed = async (feedId: string, feedLink: string) => {
-        const res = await fetch("/api/user-feeds", {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ feedId }),
+      const res = await fetch("/api/user-feeds", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ feedId }),
+      });
+      if (res.ok) {
+        refreshFeeds();
+        setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
+        dispatch({
+          type: 'REMOVE_SINGLE',
+          payload: feedLink.toLowerCase(),
         });
-        if (res.ok) {
-          refreshFeeds();
-          setSelectedFeeds((prev) => prev.filter((link) => link !== feedLink));
-          setFeedStoryCounts((prev) => {
-            const { [feedLink]: removed, ...rest } = prev;
-            return rest;
-          });
-        } else {
-          const data = await res.json();
-          console.error("Error removing feed:", data.error);
-        }
-      };
-
-      const handleCheckBoxChange = (link: string, checked: boolean) => {
-        setSelectedFeeds((prev) =>
-          checked ? [...prev, link] : prev.filter((l) => l !== link)
-        );
-        if (checked && !feedStoryCounts[link]) {
-          setFeedStoryCounts((prev) => ({ ...prev, [link]: 10 }));
-        }
-      };
-
-      const handleCountChange = (link: string, value: number) => {
-        setFeedStoryCounts((prev) => ({ ...prev, [link]: value }));
-      };
+      } else {
+        const data = await res.json();
+        console.error("Error removing feed:", data.error);
+      }
+    };
+    const handleCheckBoxChange = (link: string, checked: boolean) => {
+          const normalizedLink = link.toLowerCase();
+          setSelectedFeeds((prev) =>
+           checked ? [...prev, normalizedLink] : prev.filter((l) => l !== normalizedLink)
+          );
+        if (checked) {
+            dispatch({ type: 'UPDATE_SINGLE', payload: { feedId: normalizedLink, value: state.globalCount } });
+          }
+       };
+      
+      
 
       const onRemoveClick = () => {
         if (confirmDelete) {
@@ -97,15 +92,21 @@ export default function FeedItem({
                       leaveFrom="opacity-100"
                       leaveTo="opacity-0">
             <div className="flex items-center space-x-2">
-                <input
-                type="range"
-                min={1}
-                max={20} 
-                value={currentCount}
-                onChange={e => dispatch({
-                  type: 'UPDATE_SINGLE',
-                  payload: { feedId: feed.id, value: Number(e.target.value) }
-                })}
+            <input
+              type="range"
+              min={1}
+              max={20}
+              value={currentCount}
+              onChange={(e) => {
+                const newVal = Number(e.target.value);
+                console.log("Updating feed", feed.link.toLowerCase(), "to", newVal);
+                dispatch({
+                  type: "UPDATE_SINGLE",
+                  payload: { feedId: feed.link.toLowerCase(), value: newVal },
+                });
+              }}
+              className="w-32 transition-all duration-400 ease-in-out"
+              title="Stories from this feed"
               />
               <span>{currentCount}</span>
             </div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { SunIcon, MoonIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import UserSettingsModal from "./UserSettingsModal";
-export default function Header({defaultArticleCount, setDefaultArticleCount}) {
+export default function Header() {
 const { data: session } = useSession();
 const {theme, setTheme} = useTheme()
 const [mounted, setMounted] = useState(false)
@@ -60,8 +60,6 @@ return (
         <UserSettingsModal
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-          defaultArticleCount={defaultArticleCount}
-          setDefaultArticleCount={setDefaultArticleCount}
         />
     )}
   </header>
