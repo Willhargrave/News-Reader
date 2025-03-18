@@ -19,15 +19,23 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  const removedFeeds: string[] = user.removedFeeds as string[] || [];
-  if (!removedFeeds.includes(feedId)) {
-    removedFeeds.push(feedId);
+  const userFeed = await prisma.userFeed.findUnique({ where: { link: feedId } });
+  if (userFeed && userFeed.userId === user.id) {
+    await prisma.userFeed.delete({ where: { link: feedId } });
+    return NextResponse.json({ message: 'User feed removed' });
   }
 
-  const updatedUser = await prisma.user.update({
-    where: { username: session.user.name },
-    data: { removedFeeds },
+  const existingRemoved = await prisma.removedFeed.findFirst({
+    where: { userId: user.id, feedId },
   });
+  if (!existingRemoved) {
+    await prisma.removedFeed.create({
+      data: {
+        feedId,
+        userId: user.id,
+      },
+    });
+  }
 
-  return NextResponse.json({ message: 'Feed removed', removedFeeds: updatedUser.removedFeeds });
+  return NextResponse.json({ message: 'Feed removed for user' });
 }

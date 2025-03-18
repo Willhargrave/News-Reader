@@ -4,34 +4,38 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]/route";
 import { UserFeed } from "@prisma/client";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export async function GET(_request: Request) {
-  let removedFeedIds: string[] = [];
   const session = await getServerSession(authOptions);
-  let user = null;
+  let removedFeedIds: string[] = [];
+  let customFeeds: UserFeed[] = [];
+
   if (session && session.user?.name) {
-    user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { username: session.user.name },
     });
-    if (user && user.removedFeeds) {
-      removedFeedIds = user.removedFeeds as string[];
+    console.log("Found user:", user);
+    if (user) {
+      const removedFeedRecords = await prisma.removedFeed.findMany({
+        where: { userId: user.id },
+      });
+      removedFeedIds = removedFeedRecords.map(record => record.feedId);
+      console.log("Removed feed IDs:", removedFeedIds);
+
+      customFeeds = await prisma.userFeed.findMany({
+        where: { userId: user.id },
+      });
+      console.log("Custom feeds:", customFeeds);
     }
   }
-  
-  const globalFeeds = await prisma.feed.findMany();
-  const filteredGlobalFeeds = globalFeeds.filter(
-    (feed) => !removedFeedIds.includes(feed.id)
-  );
-  
-  let customFeeds: UserFeed[] = [];
-  if (session && session.user?.name && user) {
-    customFeeds = await prisma.userFeed.findMany({
-      where: { userId: user.id },
-    });
-  }
-  
+
+  const filteredGlobalFeeds = await prisma.feed.findMany({
+    where: { id: { notIn: removedFeedIds } },
+  });
+  console.log("Filtered global feeds:", filteredGlobalFeeds);
+
   const feeds = [...filteredGlobalFeeds, ...customFeeds];
-  
+  console.log("Combined feeds count:", feeds.length);
+
   return NextResponse.json({ feeds });
 }
-
