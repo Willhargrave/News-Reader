@@ -30,6 +30,7 @@ export type FeedFormProps = {
     toggleLinks: () => void;
     refreshFeeds: () => void;
     loading: boolean;
+    linksVisible: boolean;
   };
 
 export type AddFeedFormProps = {
@@ -40,32 +41,19 @@ export type AddFeedFormProps = {
   export interface FeedCategoryProps {
     selectedFeeds: string[];
     setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
-    feedStoryCounts: Record<string, number>;
-    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
     groupedFeeds: Record<string, Feed[]>;
-    globalCount: number;
     categoryName: string;
     isAllSelected: boolean;
     feedsInCategory: Feed[];
     refreshFeeds: () => void;
     collapse: boolean;
-  }
-
-  export interface FeedItemProps {
-    refreshFeeds: () => void;
-    setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
-    feedStoryCounts: Record<string, number>;
-    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
-    selectedFeeds: string[];
-    feed: Feed;
+    state?: any;
   }
 
 
 export interface FeedItemProps {
     refreshFeeds: () => void;
     setSelectedFeeds: Dispatch<SetStateAction<string[]>>;
-    feedStoryCounts: Record<string, number>;
-    setFeedStoryCounts: Dispatch<SetStateAction<Record<string, number>>>;
     selectedFeeds: string[];
     feed: Feed;
   }

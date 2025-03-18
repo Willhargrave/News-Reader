@@ -14,7 +14,7 @@ export default function FeedCategory({
   feedsInCategory,
   refreshFeeds,
   collapse,
-  state,
+  state
 }: FeedCategoryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { dispatch } = useFeedCountsContext();

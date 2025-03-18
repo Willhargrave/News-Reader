@@ -84,7 +84,7 @@ export default function Home() {
       <Head>
         <title>Just The News</title>
       </Head>
-      <FeedCountsProvider initialDefault={initialCounter}>
+      <FeedCountsProvider initialDefault={initialCounter ?? 10}>
       <Transition
           appear={true}
           show={true}
