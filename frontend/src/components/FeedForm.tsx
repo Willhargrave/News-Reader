@@ -19,6 +19,7 @@ export default function FeedForm({
   setArticles,
   setLoading,
   toggleLinks,
+  linksVisible,
   loading,
 }: FeedFormProps) {
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
@@ -139,12 +140,17 @@ export default function FeedForm({
             {loading ? "Loading..." : "Show Top News Stories"}
           </button>
           <button
-            type="button"
-            onClick={toggleLinks}
-            className="inline-block px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-          >
-            Toggle Links
-          </button>
+          type="button"
+          onClick={toggleLinks}
+          className={`inline-block px-4 py-2 border border-gray-500 text-sm rounded transition-transform transform active:scale-95 active:shadow-inner ${
+          linksVisible 
+          ? "bg-blue-500 text-white" 
+          : "bg-transparent text-gray-500 hover:bg-gray-100"
+          }`}
+>
+  Toggle Links
+</button>
+
         </div>
       </div>
     );

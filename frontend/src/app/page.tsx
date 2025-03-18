@@ -11,6 +11,8 @@ import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
 import { FeedCountsProvider} from "./providers/FeedCountContext";
+import Cookies from "js-cookie"
+
 
 export default function Home() {
   
@@ -20,10 +22,23 @@ export default function Home() {
   const [initialCounter, setInitialCounter] = useState<number | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [linksVisible, setLinksVisible] = useState<boolean>(false);
-  const toggleLinks = () => setLinksVisible((prev) => !prev);
+  const [linksVisible, setLinksVisible] = useState(false);
+   
 
- 
+  useEffect(() => {
+    const cookieValue = Cookies.get("linksVisible");
+    if (cookieValue !== undefined) {
+      setLinksVisible(cookieValue === "true");
+    }
+  }, []);
+
+  const toggleLinks = () => {
+    setLinksVisible((prev) => {
+      const newValue = !prev;
+      Cookies.set("linksVisible", newValue.toString(), { expires: 30 });
+      return newValue;
+    });
+  };
 
 
   const refreshFeeds = useCallback(() => {
@@ -90,6 +105,7 @@ export default function Home() {
               toggleLinks={toggleLinks}
               loading={loading}
               refreshFeeds={refreshFeeds}
+              linksVisible={linksVisible}
             />
             <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
           </div>
