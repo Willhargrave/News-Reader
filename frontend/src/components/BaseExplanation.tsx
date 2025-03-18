@@ -50,7 +50,7 @@ export default function BaseExplanation({
           </button>
         </div>
         <div className="mt-3">
-          <p>{content}</p>
+        <p style={{ whiteSpace: 'pre-line' }}>{content}</p>
         </div>
       </div>
     </Transition>

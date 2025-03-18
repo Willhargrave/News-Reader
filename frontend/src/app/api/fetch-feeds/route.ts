@@ -14,28 +14,23 @@ export async function GET(_request: Request) {
     const user = await prisma.user.findUnique({
       where: { username: session.user.name },
     });
-    console.log("Found user:", user);
     if (user) {
       const removedFeedRecords = await prisma.removedFeed.findMany({
         where: { userId: user.id },
       });
       removedFeedIds = removedFeedRecords.map(record => record.feedId);
-      console.log("Removed feed IDs:", removedFeedIds);
 
       customFeeds = await prisma.userFeed.findMany({
         where: { userId: user.id },
       });
-      console.log("Custom feeds:", customFeeds);
     }
   }
 
   const filteredGlobalFeeds = await prisma.feed.findMany({
     where: { id: { notIn: removedFeedIds } },
   });
-  console.log("Filtered global feeds:", filteredGlobalFeeds);
 
   const feeds = [...filteredGlobalFeeds, ...customFeeds];
-  console.log("Combined feeds count:", feeds.length);
 
   return NextResponse.json({ feeds });
 }

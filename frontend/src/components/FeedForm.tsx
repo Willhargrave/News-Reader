@@ -95,21 +95,6 @@ export default function FeedForm({
             />
           </div>
         )}
-        {selectedFeeds.length > 1 && (
-          <Transition
-            enter="transition-opacity duration-700"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity duration-700"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div>
-              <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
-              <GlobalFeedCounter />
-            </div>
-          </Transition>
-        )}
         {Object.keys(groupedFeeds).map((categoryName) => {
           const feedsInCategory = groupedFeeds[categoryName] || [];
           const isAllSelected = feedsInCategory.every((feed) =>
@@ -130,15 +115,34 @@ export default function FeedForm({
             />
           );
         })}
+         {selectedFeeds.length > 1 && (
+          <Transition
+            enter="transition-opacity duration-700"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-700"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+          <div className="p-4 border rounded shadow-lg mb-4">
+          <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
+          <GlobalFeedCounter />
+          </div>
+          </Transition>
+        )}
         <div className="flex space-x-4 mb-4">
-          <button
+        <button
             type="submit"
             onClick={handleSubmit}
-            disabled={loading}
-            className="inline-block px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+            disabled={loading || selectedFeeds.length === 0}
+            className={`inline-block px-4 py-2 border border-gray-500 text-sm rounded ${
+              loading || selectedFeeds.length === 0
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-gray-100"
+            }`}
           >
-            {loading ? "Loading..." : "Show Top News Stories"}
-          </button>
+  {loading ? "Loading..." : "Generate News Articles"}
+</button>
           <button
           type="button"
           onClick={toggleLinks}
