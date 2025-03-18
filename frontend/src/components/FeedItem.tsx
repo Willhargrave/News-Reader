@@ -99,7 +99,6 @@ export default function FeedItem({
               value={currentCount}
               onChange={(e) => {
                 const newVal = Number(e.target.value);
-                console.log("Updating feed", feed.link.toLowerCase(), "to", newVal);
                 dispatch({
                   type: "UPDATE_SINGLE",
                   payload: { feedId: feed.link.toLowerCase(), value: newVal },

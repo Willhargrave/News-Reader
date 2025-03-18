@@ -19,7 +19,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  const userFeed = await prisma.userFeed.findUnique({ where: { link: feedId } });
+  const userFeed = await prisma.userFeed.findUnique({ where: { id: feedId } });
   if (userFeed && userFeed.userId === user.id) {
     await prisma.userFeed.delete({ where: { link: feedId } });
     return NextResponse.json({ message: 'User feed removed' });
