@@ -9,12 +9,14 @@ export const authOptions = {
       name: "Credentials",
       credentials: {
         username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
+        password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({ where: { username: credentials.username } });
+        const user = await prisma.user.findUnique({
+          where: { username: credentials.username }
+        });
         if (!user) return null;
 
         const isValid = await compare(credentials.password, user.password);
@@ -25,10 +27,23 @@ export const authOptions = {
     })
   ],
   session: {
-    strategy: "jwt" as const,
+    strategy: "jwt" as const
   },
-  secret: process.env.NEXTAUTH_SECRET || "my-secret", 
-};
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = { id: token.id, name: token.name };
+      return session;
+    }
+  },
+  secret: process.env.NEXTAUTH_SECRET
+  };
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

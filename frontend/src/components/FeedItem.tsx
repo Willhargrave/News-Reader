@@ -62,6 +62,7 @@ export default function FeedItem({
     
     return (
         <div key={feed.link} className="flex items-center space-x-2 mb-1">
+        <label className="flex items-center font-bold space-x-1 mb-2">
         <input
           type="checkbox"
           value={feed.link}
@@ -70,6 +71,7 @@ export default function FeedItem({
           className="mr-2 cursor-pointer"
         />
         <span className="cursor-default">{feed.title}</span>
+        </label>
         {session && feed.id && (
           <button
           type="button"

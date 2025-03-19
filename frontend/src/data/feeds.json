@@ -67,11 +67,6 @@
   },
 
   {
-    "title": "Slashdot",
-    "link": "https://rss.slashdot.org/Slashdot/slashdotMain",
-    "category": "technology"
-  },
-  {
     "title": "The Verge",
     "link": "https://www.theverge.com/rss/index.xml",
     "category": "technology"

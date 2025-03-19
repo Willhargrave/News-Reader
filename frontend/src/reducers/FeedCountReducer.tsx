@@ -68,6 +68,7 @@ interface FeedState {
         };
         
         case 'REMOVE_SINGLE': {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { [action.payload]: removed, ...rest } = state.feedCounts;
             return {
               ...state,

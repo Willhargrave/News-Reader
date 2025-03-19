@@ -46,8 +46,10 @@ export default function FeedCategory({
   };
 
   return (
-    <details open={isOpen} key={categoryName} className="mb-4 cursor-pointer" onToggle={handleToggle}>
-      <summary className="font-bold">{categoryName.toUpperCase()}</summary>
+    <details open={isOpen} className="mb-4 cursor-pointer" onToggle={handleToggle}>
+      <summary className="font-bold text-lg">
+        {categoryName.toUpperCase()}
+      </summary>
       <Transition
         show={isOpen}
         enter="transition-opacity duration-500"
@@ -57,7 +59,7 @@ export default function FeedCategory({
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="mt-2">
+        <div className="mt-2 p-4 border rounded-lg shadow">
           <label className="flex items-center text-sm space-x-1 mb-2">
             <input
               type="checkbox"
@@ -65,7 +67,7 @@ export default function FeedCategory({
               onChange={(e) =>
                 handleSelectAllForCategory(categoryName, e.target.checked)
               }
-              className="cursor-pointer"
+              className="mr-2 cursor-pointer"
             />
             <span>Select All</span>
           </label>
@@ -82,4 +84,6 @@ export default function FeedCategory({
       </Transition>
     </details>
   );
+  
+  
 }

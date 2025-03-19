@@ -47,6 +47,7 @@ export type AddFeedFormProps = {
     feedsInCategory: Feed[];
     refreshFeeds: () => void;
     collapse: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     state?: any;
   }
 
