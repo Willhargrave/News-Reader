@@ -15,6 +15,7 @@ export default function FeedItem({
     const [confirmDelete, setConfirmDelete] = useState(false);
     const {dispatch, getCountForFeed, state} = useFeedCountsContext();
     const currentCount = getCountForFeed(feed.link.toLowerCase());
+    
    
 
 

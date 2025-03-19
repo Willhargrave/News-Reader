@@ -4,6 +4,7 @@ import { Dialog, DialogTitle, DialogPanel, Transition } from "@headlessui/react"
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
 import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 import { useSession } from "next-auth/react";
 
@@ -12,6 +13,10 @@ export default function UserSettingsModal({ isOpen, onClose }: { isOpen: boolean
   const { theme } = useTheme();
   const router = useRouter();
   const { state, dispatch } = useFeedCountsContext();
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+
 
   const handleDeleteAccount = async () => {
     try {
@@ -46,6 +51,27 @@ export default function UserSettingsModal({ isOpen, onClose }: { isOpen: boolean
       console.error("Error updating settings:", error);
     }
   };
+
+  const handleLogoutClick = async () => {
+    if (confirmLogout) {
+      await signOut();
+      router.push("/");
+    } else {
+      setConfirmLogout(true);
+      setTimeout(() => setConfirmLogout(false), 3000);
+    }
+  };
+
+  const handleDeleteClick = async () => {
+    if (confirmDelete) {
+      handleDeleteAccount();
+    } else {
+      setConfirmDelete(true);
+      setTimeout(() => setConfirmDelete(false), 3000);
+    }
+  };
+
+
 
   const panelClasses = `inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left 
     align-middle transition-all transform shadow-xl rounded-2xl ${
@@ -113,29 +139,25 @@ export default function UserSettingsModal({ isOpen, onClose }: { isOpen: boolean
                 </button>
               </div>
               <div className="mt-6 flex justify-end space-x-4">
-                <button
+              <button
                   type="button"
-                  onClick={() => signOut()}
-                  className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600"
+                  onClick={handleLogoutClick}
+                  className={`px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100 dark:hover:bg-gray-600 ${
+                    confirmLogout ? "bg-red-800 text-white" : "bg-transparent text-red-500"
+                  }`}
                 >
-                  Logout
+                  {confirmLogout ? "Confirm Logout" : "Logout"}
                 </button>
                 <button
                   type="button"
-                  onClick={handleDeleteAccount}
-                  className="px-4 py-2 border border-red-500 text-sm rounded hover:bg-red-100 dark:hover:bg-red-600"
+                  onClick={handleDeleteClick}
+                  className={`px-4 py-2 border border-red-500 text-sm rounded hover:bg-red-100 dark:hover:bg-red-600 ${
+                    confirmDelete ? "bg-red-800 text-white" : "bg-transparent text-red-500"
+                  }`}
                 >
-                  Delete Account
+                  {confirmDelete ? "Confirm Delete" : "Delete Account"}
                 </button>
-              </div>
-              <div className="mt-4 flex justify-end">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="text-sm text-blue-500 underline"
-                >
-                  Close
-                </button>
+
               </div>
             </DialogPanel>
           </Transition>
