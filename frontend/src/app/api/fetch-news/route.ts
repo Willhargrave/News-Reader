@@ -5,7 +5,7 @@ import Parser from "rss-parser";
 import prisma from "@/lib/prisma";
 import { htmlToText } from "html-to-text";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import { Article } from "@/types";
 
 const parser = new Parser();
