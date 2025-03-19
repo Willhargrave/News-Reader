@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -11,15 +12,27 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
     });
     const data = await res.json();
+
     if (res.ok) {
-      setMessage("Registration successful. Please log in.");
-      setTimeout(() => router.push("/login"), 1500);
+      setMessage("Registration successful. Logging you in...");
+      const result = await signIn("credentials", {
+        redirect: false,
+        username,
+        password,
+      });
+
+      if (result?.error) {
+        setMessage(result.error);
+      } else {
+        router.push("/");
+      }
     } else {
       setMessage(data.error || "Registration failed.");
     }
