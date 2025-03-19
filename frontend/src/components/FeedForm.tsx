@@ -28,10 +28,12 @@ export default function FeedForm({
     const { state: feedCountsState, dispatch } = useFeedCountsContext();
 
 
+
     const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
       setLoading(true);
       const startTime = Date.now();
+    
       const res = await fetch("/api/fetch-news", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,26 +44,42 @@ export default function FeedForm({
           displayMode,
         }),
       });
+    
       const data = await res.json();
+    
+      if (data.error) {
+        setLoading(false);
+        alert(data.error);
+        return;
+      }
+    
+      if (data.articles && data.articles.length > 50) {
+        setLoading(false);
+        alert("You have passed the limit of the number of stories you can generate! Please try again with less than 50");
+        return;
+      }
+    
       setArticles(data.articles || []);
+    
       const elapsed = Date.now() - startTime;
       const minDelay = 1500;
       if (elapsed < minDelay) {
         setTimeout(() => {
           setLoading(false);
           setSelectedFeeds([]);
-          dispatch({ type: 'RESET_FEED_COUNTS' });
+          dispatch({ type: "RESET_FEED_COUNTS" });
           setCollapseCategories(true);
           setTimeout(() => setCollapseCategories(false), 100);
         }, minDelay - elapsed);
       } else {
         setLoading(false);
         setSelectedFeeds([]);
-        dispatch({ type: 'RESET_FEED_COUNTS' });
+        dispatch({ type: "RESET_FEED_COUNTS" });
         setCollapseCategories(true);
         setTimeout(() => setCollapseCategories(false), 100);
       }
     };
+    
   
     const groupedFeeds: Record<string, Feed[]> = {};
     if (Array.isArray(availableFeeds)) {
@@ -141,19 +159,19 @@ export default function FeedForm({
                 : "hover:bg-gray-100"
             }`}
           >
-  {loading ? "Loading..." : "Generate News Articles"}
-</button>
-          <button
-          type="button"
-          onClick={toggleLinks}
-          className={`inline-block px-4 py-2 border border-gray-500 text-sm rounded transition-transform transform active:scale-95 active:shadow-inner ${
-          linksVisible 
-          ? "bg-blue-500 text-white" 
-          : "bg-transparent text-gray-500 hover:bg-gray-100"
-          }`}
->
-  Toggle Links
-</button>
+        {loading ? "Loading..." : "Generate News Articles"}
+        </button>
+                  <button
+                  type="button"
+                  onClick={toggleLinks}
+                  className={`inline-block px-4 py-2 border border-gray-500 text-sm rounded transition-transform transform active:scale-95 active:shadow-inner ${
+                  linksVisible 
+                  ? "bg-blue-500 text-white" 
+                  : "bg-transparent text-gray-500 hover:bg-gray-100"
+                  }`}
+                  >
+                  Toggle Links
+        </button>
 
         </div>
       </div>
