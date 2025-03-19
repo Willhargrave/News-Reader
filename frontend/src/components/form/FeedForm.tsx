@@ -2,10 +2,10 @@
 
 import { FormEvent, useState } from "react";
 import AddFeedForm from "./AddFeedForm";
-import { Feed } from "../types";
-import { FeedFormProps } from "../types";
+import { Feed } from "../../types";
+import { FeedFormProps } from "../../types";
 import { Transition } from "@headlessui/react";
-import AddFeedExplanation from "./AddFeedExplanation";
+import AddFeedExplanation from "../explenation/AddFeedExplanation";
 import FeedCategory from "./FeedCategory";
 import SelectDisplayTypeRadio from "./SelectDisplayType";
 import GlobalFeedCounter from "./GlobalFeedCounter";

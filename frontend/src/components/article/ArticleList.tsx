@@ -1,6 +1,6 @@
 "use client"
 import { Transition } from "@headlessui/react";
-import { ArticleListProps } from "../types";
+import { ArticleListProps } from "../../types";
 import ArticleItem from "./ArticleItem";
 
 export default function ArticleList({ articles, linksVisible, loading }: ArticleListProps) {

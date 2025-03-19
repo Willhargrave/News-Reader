@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback} from "react";
 import { Transition } from "@headlessui/react";
 import Head from "next/head";
-import Header from "../components/Header";
-import FeedForm from "../components/FeedForm";
-import ArticleList from "../components/ArticleList";
-import SiteExplanation from "@/components/SiteExplanation";
+import Header from "../components/items/Header";
+import FeedForm from "../components/form/FeedForm";
+import ArticleList from "../components/article/ArticleList";
+import SiteExplanation from "@/components/explenation/SiteExplanation";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
