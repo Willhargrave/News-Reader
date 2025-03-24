@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "node",
+      "target": "ES2020",
+      "noEmit": false,
+      "outDir": "dist-seed"
+    },
+    "include": ["prisma/loadFeeds.ts"]
+  }
+  

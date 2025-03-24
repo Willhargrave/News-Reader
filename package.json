@@ -2,7 +2,6 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "type":  "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,9 +9,9 @@
     "lint": "next lint",
     "postinstall": "prisma generate && prisma migrate deploy && npx prisma db seed"
   },
-  "prisma": {
-    "seed": "ts-node --esm prisma/loadFeeds.ts"
-  },
+    "prisma": {
+      "seed": "node --loader ts-node/esm --project tsconfig.seed.json prisma/loadFeeds.ts"
+    },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
