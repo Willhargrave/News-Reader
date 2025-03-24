@@ -7,10 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate && prisma migrate deploy && npx prisma db seed"
+    "postinstall": "prisma generate && prisma migrate deploy && npx prisma db seed",
+    "seed:build": "tsc --project tsconfig.seed.json",
+    "seed:run": "node dist-seed/loadFeeds.js",
+    "seed": "npm run seed:build && npm run seed:run"
   },
     "prisma": {
-      "seed": "node --loader ts-node/esm --project tsconfig.seed.json prisma/loadFeeds.ts"
+        "seed": "npm run seed"
     },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
