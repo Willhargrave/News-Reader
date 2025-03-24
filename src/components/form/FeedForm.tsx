@@ -9,6 +9,7 @@ import AddFeedExplanation from "../explenation/AddFeedExplanation";
 import FeedCategory from "./FeedCategory";
 import SelectDisplayTypeRadio from "./SelectDisplayType";
 import GlobalFeedCounter from "./GlobalFeedCounter";
+import { useSession } from "next-auth/react";
 import { useFeedCountsContext } from "@/app/providers/FeedCountContext";
 
 export default function FeedForm({
@@ -26,7 +27,7 @@ export default function FeedForm({
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [collapseCategories, setCollapseCategories] = useState(false);
     const { state: feedCountsState, dispatch } = useFeedCountsContext();
-
+     const { data: session } = useSession();
 
 
     const handleSubmit = async (e: FormEvent) => {
@@ -94,13 +95,15 @@ export default function FeedForm({
   
     return (
       <div>
-        <button
-          type="button"
-          onClick={() => setShowAddFeedForm((prev) => !prev)}
-          className="mb-4 px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-        >
-          {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
-        </button>
+        {session && (
+           <button
+           type="button"
+           onClick={() => setShowAddFeedForm((prev) => !prev)}
+           className="mb-4 px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+         >
+           {showAddFeedForm ? "Hide Add Feed" : "Add a New Feed"}
+         </button>
+        )}
         {showAddFeedForm && (
           <div>
             <AddFeedExplanation initiallyExpanded={true} />

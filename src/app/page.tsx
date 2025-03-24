@@ -82,7 +82,7 @@ export default function Home() {
     <>
   
       <Head>
-        <title>Just The News</title>
+        <title>Clean Feed</title>
       </Head>
       <FeedCountsProvider initialDefault={initialCounter ?? 10}>
       <Transition
