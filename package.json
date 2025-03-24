@@ -10,7 +10,7 @@
     "postinstall": "prisma generate && prisma migrate deploy && npx prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node prisma/loadFeeds.ts"
+    "seed": "ts-node --esm prisma/loadFeeds.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
