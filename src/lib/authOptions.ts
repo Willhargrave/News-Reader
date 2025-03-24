@@ -26,5 +26,4 @@ export const authOptions = {
     strategy: "jwt" as const,
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true,
 };
