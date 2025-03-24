@@ -1,10 +1,10 @@
+import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
-async function main() {
-  const prismaModule = await import(path.join(process.cwd(), 'src', 'lib', 'prisma.ts'));
-  const prisma = prismaModule.default;
+const prisma = new PrismaClient();
 
+async function main() {
   const feedsPath = path.join(process.cwd(), 'src', 'data', 'feeds.json');
   const feedsData = fs.readFileSync(feedsPath, 'utf8');
   const feeds = JSON.parse(feedsData);
@@ -12,23 +12,26 @@ async function main() {
   for (const feed of feeds) {
     const existing = await prisma.feed.findUnique({ where: { link: feed.link } });
     if (!existing) {
-        await prisma.feed.create({
-            data: {
-              title: feed.title,
-              link: feed.link,
-              category: feed.category, 
-            },
-          });
+      await prisma.feed.create({
+        data: {
+          title: feed.title,
+          link: feed.link,
+          category: feed.category,
+        },
+      });
       console.log(`Inserted feed: ${feed.title}`);
     } else {
       console.log(`Feed exists: ${feed.title}`);
     }
   }
-  console.log("Done loading feeds.");
-  process.exit(0);
+  console.log('Done loading feeds.');
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
