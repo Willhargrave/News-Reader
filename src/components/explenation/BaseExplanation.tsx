@@ -13,14 +13,14 @@ export default function BaseExplanation({
 
   if (!expanded) {
     return (
-      <div className="flex justify-end">
+      <div className="flex justify-end p-6">
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="text-2xl text-blue-500 hover:text-blue-700"
+          className="text-4xl text-blue-600 hover:text-blue-900"
           title="Show explanation"
         >
-          +
+          ?
         </button>
       </div>
     );
