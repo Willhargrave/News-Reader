@@ -7,6 +7,7 @@ import { htmlToText } from "html-to-text";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import { Article } from "@/types";
+import { User } from ".prisma/client";
 
 const parser = new Parser();
 
@@ -31,10 +32,9 @@ export async function POST(request: Request) {
 
     const feedArticlesMap: Record<string, Article[]> = {};
 
-    let user: any = null;
-    if (session && session.user?.name) {
-      user = await prisma.user.findUnique({ where: { username: session.user.name } });
-    }
+    const user: User | null = session && session.user?.name
+    ? await prisma.user.findUnique({ where: { username: session.user.name } })
+    : null;
 
     for (const url of selectedFeeds) {
       const normalizedUrl = url.toLowerCase();
