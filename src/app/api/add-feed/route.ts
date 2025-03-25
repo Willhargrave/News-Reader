@@ -28,7 +28,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    const existingUserFeed = await prisma.userFeed.findUnique({ where: { link: normalizedLink } });
+    const existingUserFeed = await prisma.userFeed.findFirst({
+      where: { link: normalizedLink, userId: user.id },
+    });
     if (existingUserFeed && existingUserFeed.userId === user.id) {
       return NextResponse.json({ message: "Feed already exists", feed: existingUserFeed }, { status: 200 });
     }

@@ -17,10 +17,11 @@ model Feed {
 model UserFeed {
   id       String @id @default(uuid())
   title    String
-  link     String @unique
+  link     String 
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   category String @default("news")
+  @@unique([userId, link])
 }
 
 model User {
