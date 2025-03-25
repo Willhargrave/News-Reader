@@ -10,6 +10,7 @@ import { Article } from "@/types";
 
 const parser = new Parser();
 
+
 export async function POST(request: Request) {
   try {
     const { selectedFeeds, feedStoryCounts, displayMode, defaultCount, globalCount } = await request.json();
@@ -30,18 +31,25 @@ export async function POST(request: Request) {
 
     const feedArticlesMap: Record<string, Article[]> = {};
 
+    let user: any = null;
+    if (session && session.user?.name) {
+      user = await prisma.user.findUnique({ where: { username: session.user.name } });
+    }
+
     for (const url of selectedFeeds) {
       const normalizedUrl = url.toLowerCase();
       const validatedDefault = Math.max(1, Math.min(globalCount || defaultCount || 10, 20));
       const limit =
-      feedStoryCounts?.[normalizedUrl] !== undefined
-        ? Number(feedStoryCounts[normalizedUrl])
-        : validatedDefault;
+        feedStoryCounts?.[normalizedUrl] !== undefined
+          ? Number(feedStoryCounts[normalizedUrl])
+          : validatedDefault;
       try {
         const feed = await parser.parseURL(normalizedUrl);
         let customTitle = "";
-        if (session && session.user?.name) {
-          const userFeed = await prisma.userFeed.findUnique({ where: { link: normalizedUrl } });
+        if (user) {
+          const userFeed = await prisma.userFeed.findFirst({
+            where: { link: normalizedUrl, userId: user.id },
+          });
           if (userFeed) {
             customTitle = userFeed.title;
           }
