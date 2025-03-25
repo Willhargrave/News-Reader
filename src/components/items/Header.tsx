@@ -17,7 +17,13 @@ useEffect(() => setMounted(true), [])
 
 return (
   <header className="flex justify-between items-center mb-6">
-    <h1 className="text-3xl font-bold">Clean Feed</h1>
+    <h1 className="text-5xl p-4 font-bold">
+  Clean
+  <br />
+  <span className="block my-2 border-t-2 border-current w-full"></span>
+  Feed
+</h1>
+
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
     >

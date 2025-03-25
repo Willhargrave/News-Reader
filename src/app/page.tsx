@@ -104,7 +104,7 @@ export default function Home() {
           enterFrom="opacity-0"
           enterTo="opacity-100"
         >
-          <div className="min-h-screen p-8 font-sans">
+          <div className="min-h-screen p-6 font-sans">
             <Header/>
             <SiteExplanation />
             {feedLoading ? (
