@@ -21,7 +21,7 @@ model UserFeed {
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   category String @default("news")
-  @@unique([userId, link])
+  @@unique([userId, link], name: "userId_link")
 }
 
 model User {

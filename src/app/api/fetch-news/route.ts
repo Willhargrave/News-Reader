@@ -47,9 +47,9 @@ export async function POST(request: Request) {
         const feed = await parser.parseURL(normalizedUrl);
         let customTitle = "";
         if (user) {
-          const userFeed = await prisma.userFeed.findFirst({
-            where: { link: normalizedUrl, userId: user.id },
-          });
+          const userFeed = await prisma.userFeed.findUnique({
+            where: { userId_link: { userId: user.id, link: normalizedUrl } },
+          });          
           if (userFeed) {
             customTitle = userFeed.title;
           }
