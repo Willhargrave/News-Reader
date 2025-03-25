@@ -47,7 +47,7 @@ export default function FeedCategory({
 
   return (
     <details open={isOpen} className="mb-4 cursor-pointer" onToggle={handleToggle}>
-      <summary className="font-bold text-lg">
+      <summary className="font-bold text-xl">
         {categoryName.toUpperCase()}
       </summary>
       <Transition
