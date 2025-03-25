@@ -10,8 +10,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Just the News",
-  description: "A site for just checking the news",
+  title: "Clean Feed",
+  description: "Ad-free site for reading RSS feeds",
 };
 
 export default function RootLayout({

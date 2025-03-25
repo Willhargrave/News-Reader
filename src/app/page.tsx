@@ -22,6 +22,7 @@ export default function Home() {
   const [initialCounter, setInitialCounter] = useState<number | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [feedLoading, setFeedLoading] = useState<boolean>(false)
   const [linksVisible, setLinksVisible] = useState(false);
    
 
@@ -41,20 +42,32 @@ export default function Home() {
   };
 
 
-  const refreshFeeds = useCallback(() => {
+  const refreshFeeds = useCallback(async () => {
+    setFeedLoading(true);
     if (session) {
-      fetch("/api/fetch-feeds")
-        .then((res) => res.json())
-        .then((data) => {
-          setAvailableFeeds(data.feeds || []);
-          setSelectedFeeds([]); 
-        })
-        .catch((err) => console.error(err));
+      try {
+        const startTime = Date.now();
+        const res = await fetch("/api/fetch-feeds");
+        const data = await res.json();
+        setAvailableFeeds(data.feeds || []);
+        setSelectedFeeds([]);
+        const elapsed = Date.now() - startTime;
+        const remaining = 500 - elapsed;
+        if (remaining > 0) {
+          await new Promise((resolve) => setTimeout(resolve, remaining));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFeedLoading(false);
+      }
     } else {
       setAvailableFeeds(feedsData);
-      setSelectedFeeds([]); 
+      setSelectedFeeds([]);
+      setFeedLoading(false);
     }
   }, [session]);
+  
 
   useEffect(() => {
     refreshFeeds();
@@ -65,7 +78,6 @@ export default function Home() {
       try {
         const res = await fetch("/api/get-settings");
         const data = await res.json();
-        console.log("Fetched settings:", data);
         if (data.defaultArticleCount !== undefined) {
           setInitialCounter(data.defaultArticleCount);
         }
@@ -95,6 +107,11 @@ export default function Home() {
           <div className="min-h-screen p-8 font-sans">
             <Header/>
             <SiteExplanation />
+            {feedLoading ? (
+            <div className="flex justify-center items-center py-10">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          ) : (
             <FeedForm
               availableFeeds={availableFeeds}
               setAvailableFeeds={setAvailableFeeds}
@@ -107,6 +124,7 @@ export default function Home() {
               refreshFeeds={refreshFeeds}
               linksVisible={linksVisible}
             />
+          )}
             <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
           </div>
           </Transition>
