@@ -104,10 +104,10 @@ export default function Home() {
           enterFrom="opacity-0"
           enterTo="opacity-100"
         >
-          <div className="min-h-screen p-6 font-sans">
+          <div className="min-h-screen lg:p-6 font-sans">
             <Header/>
-            <div className="lg:p-6">
             <SiteExplanation />
+            <div className="p-6 lg:p-12">
             {feedLoading ? (
             <div className="flex justify-center items-center py-10">
               <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
