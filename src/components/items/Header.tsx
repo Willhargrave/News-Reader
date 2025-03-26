@@ -18,56 +18,50 @@ useEffect(() => setMounted(true), [])
 return (
   <header className="flex justify-between items-center mb-6">
     <h1 className="text-5xl p-4 font-bold">
-  Clean
-  <br />
-  <span className="block my-2 border-t-2 border-current w-full"></span>
-  Feed
-</h1>
-
-    <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-    >
-      {mounted ? (
-        theme === "dark" ? (
-          <SunIcon className="w-6 h-6 text-yellow-400" />
+      Clean
+      <br />
+      <span className="block my-2 border-t-2 border-current w-full"></span>
+      Feed
+    </h1>
+    <div className="flex items-center space-x-4">
+      <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+        {mounted ? (
+          theme === "dark" ? (
+            <SunIcon className="w-6 h-6 text-yellow-400" />
+          ) : (
+            <MoonIcon className="w-6 h-6 text-gray-800" />
+          )
         ) : (
-          <MoonIcon className="w-6 h-6 text-gray-800" />
-        )
+          "Toggle Mode"
+        )}
+      </button>
+      {!session ? (
+        <div className="flex space-x-4">
+          <Link
+            href="/login"
+            className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+          >
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
+          >
+            Register
+          </Link>
+        </div>
       ) : (
-        "Toggle Mode"
-      )}
-    </button>
-    {!session ? (
-      <div className="flex space-x-4">
-        <Link
-          href="/login"
-          className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-        >
-          Login
-        </Link>
-        <Link
-          href="/register"
-          className="px-4 py-2 border border-gray-500 text-sm rounded hover:bg-gray-100"
-        >
-          Register
-        </Link>
-      </div>
-    ) : (
-      <div className="flex items-center space-x-4">
         <button
           onClick={() => setShowModal(true)}
           className="focus:outline-none"
           aria-label="User Options"
         >
-        <UserCircleIcon className="w-8 h-8 text-gray-700 dark:text-gray-200 hover:text-gray-400" />
+          <UserCircleIcon className="w-8 h-8 text-gray-700 dark:text-gray-200 hover:text-gray-400" />
         </button>
-      </div>
-    )}
+      )}
+    </div>
     {showModal && (
-        <UserSettingsModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-        />
+      <UserSettingsModal isOpen={showModal} onClose={() => setShowModal(false)} />
     )}
   </header>
 );
