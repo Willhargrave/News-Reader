@@ -113,11 +113,12 @@ export default function UserSettingsModal({ isOpen, onClose }: { isOpen: boolean
               </DialogTitle>
               <div className="mt-4">
                 <label className="block text-sm font-medium mb-2">
-                  Default Article Count
+                  Default Article Count {state.defaultCount}
                 </label>
                 <input
-                  type="number"
+                  type="range"
                   min={1}
+                  max={20}
                   value={state.defaultCount}
                   onChange={(e) =>
                     dispatch({
