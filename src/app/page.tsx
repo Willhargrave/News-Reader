@@ -106,7 +106,7 @@ export default function Home() {
         >
           <div className="min-h-screen p-6 font-sans">
             <Header/>
-            <div className="p-6">
+            <div className="lg:p-6">
             <SiteExplanation />
             {feedLoading ? (
             <div className="flex justify-center items-center py-10">
