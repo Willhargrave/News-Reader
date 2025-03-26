@@ -59,7 +59,7 @@ return (
           className="focus:outline-none"
           aria-label="User Options"
         >
-          <UserCircleIcon className="w-8 h-8 text-gray-700 dark:text-gray-200" />
+        <UserCircleIcon className="w-8 h-8 text-gray-700 dark:text-gray-200 hover:text-gray-400" />
         </button>
       </div>
     )}

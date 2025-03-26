@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Transition } from "@headlessui/react";
 import { BaseExplanationProps } from "@/types";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 
 export default function BaseExplanation({
   title,
@@ -17,10 +18,9 @@ export default function BaseExplanation({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="text-4xl text-blue-600 hover:text-blue-900"
           title="Show explanation"
         >
-          ?
+          <QuestionMarkCircleIcon className="w-6 h-6 hover:text-blue-400" />
         </button>
       </div>
     );
