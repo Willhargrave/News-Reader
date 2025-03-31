@@ -16,6 +16,7 @@ export default function FeedItem({
     const {dispatch, getCountForFeed, state} = useFeedCountsContext();
     const currentCount = getCountForFeed(feed.link.toLowerCase());
     
+    
    
 
 
@@ -48,8 +49,6 @@ export default function FeedItem({
           }
        };
       
-      
-
       const onRemoveClick = () => {
         if (confirmDelete) {
           handleRemoveFeed(feed.id!, feed.link);

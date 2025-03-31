@@ -11,13 +11,31 @@ import { User } from ".prisma/client";
 
 const parser = new Parser();
 
-
 export async function POST(request: Request) {
   try {
-    const { selectedFeeds, feedStoryCounts, displayMode, defaultCount, globalCount } = await request.json();
+    const payload = await request.json();
 
-    if (!selectedFeeds || !Array.isArray(selectedFeeds) || selectedFeeds.length === 0) {
-      return NextResponse.json({ error: "No feeds selected" }, { status: 400 });
+    // Determine which payload is being used.
+    let selectedFeeds: string[] = [];
+    let feedStoryCounts: Record<string, number> = {};
+    let displayMode: "grouped" | "interleaved" = "grouped";
+    let defaultCount = 10;
+    let globalCount = 10;
+
+    if (payload.url) {
+      // Simple URL form: { url, articleCount }
+      selectedFeeds = [payload.url];
+      defaultCount = Number(payload.articleCount) || 10;
+      globalCount = defaultCount;
+    } else if (payload.selectedFeeds) {
+      // Original FeedForm payload
+      selectedFeeds = payload.selectedFeeds;
+      feedStoryCounts = payload.feedStoryCounts || {};
+      displayMode = payload.displayMode || "grouped";
+      defaultCount = payload.defaultCount || 10;
+      globalCount = payload.globalCount || defaultCount;
+    } else {
+      return NextResponse.json({ error: "No feeds provided" }, { status: 400 });
     }
 
     const feedsPath = path.join(process.cwd(), "src", "data", "feeds.json");
@@ -28,19 +46,23 @@ export async function POST(request: Request) {
       feedMap[feed.link.toLowerCase()] = feed.title;
     });
 
-    const session = await getServerSession(authOptions);
+    // Only use session/user customizations when not using the simple URL form.
+    let user: User | null = null;
+    if (!payload.url) {
+      const session = await getServerSession(authOptions);
+      user =
+        session && session.user?.name
+          ? await prisma.user.findUnique({ where: { username: session.user.name } })
+          : null;
+    }
 
     const feedArticlesMap: Record<string, Article[]> = {};
 
-    const user: User | null = session && session.user?.name
-    ? await prisma.user.findUnique({ where: { username: session.user.name } })
-    : null;
-
     for (const url of selectedFeeds) {
       const normalizedUrl = url.toLowerCase();
-      const validatedDefault = Math.max(1, Math.min(globalCount || defaultCount || 10, 20));
+      const validatedDefault = Math.max(1, Math.min(globalCount || defaultCount, 20));
       const limit =
-        feedStoryCounts?.[normalizedUrl] !== undefined
+        feedStoryCounts[normalizedUrl] !== undefined
           ? Number(feedStoryCounts[normalizedUrl])
           : validatedDefault;
       try {
@@ -49,7 +71,7 @@ export async function POST(request: Request) {
         if (user) {
           const userFeed = await prisma.userFeed.findUnique({
             where: { userId_link: { userId: user.id, link: normalizedUrl } },
-          });          
+          });
           if (userFeed) {
             customTitle = userFeed.title;
           }
@@ -104,4 +126,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Error fetching news" }, { status: 500 });
   }
 }
+
 

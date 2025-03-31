@@ -5,8 +5,9 @@ import AddFeedForm from "./AddFeedForm";
 import { Feed } from "../../types";
 import { FeedFormProps } from "../../types";
 import { Transition } from "@headlessui/react";
-import AddFeedExplanation from "../explenation/AddFeedExplanation";
+import AddFeedExplanation from "../explanation/AddFeedExplanation";
 import FeedCategory from "./FeedCategory";
+import UrlForm from "./UrlForm";
 import SelectDisplayTypeRadio from "./SelectDisplayType";
 import GlobalFeedCounter from "./GlobalFeedCounter";
 import { useSession } from "next-auth/react";
@@ -26,24 +27,54 @@ export default function FeedForm({
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
     const [collapseCategories, setCollapseCategories] = useState(false);
-    const { state: feedCountsState, dispatch } = useFeedCountsContext();
-     const { data: session } = useSession();
+    const { state: feedCountsState, dispatch, getCountForFeed } = useFeedCountsContext();
+    const { data: session } = useSession();
+    const [urlInput, setUrlInput] = useState("");
+    const urlFeedKey = urlInput.trim().toLowerCase();
+    const currentUrlCount = urlInput.trim() !== "" 
+      ? getCountForFeed(urlFeedKey)
+      : feedCountsState.defaultCount; // fallback default if no URL is entered
+
+    // Function to update the count for the URL feed:
+    const updateUrlCount = (newVal: number) => {
+      if (urlInput.trim() !== "") {
+        dispatch({
+          type: "UPDATE_SINGLE",
+          payload: { feedId: urlFeedKey, value: newVal },
+        });
+      }
+};
+
+    
+   
 
 
     const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
       setLoading(true);
       const startTime = Date.now();
+  
+      const normalizedSelectedFeeds = selectedFeeds.map((feed) => feed.toLowerCase());
+      const combinedFeeds = [...normalizedSelectedFeeds];
+    
+      if (urlInput.trim() !== "") {
+        const normalizedUrl = urlInput.trim().toLowerCase();
+        if (!combinedFeeds.includes(normalizedUrl)) {
+          combinedFeeds.push(normalizedUrl);
+        }
+      }
+          const payload = {
+        selectedFeeds: combinedFeeds,
+        feedStoryCounts: feedCountsState.feedCounts,
+        defaultCount: feedCountsState.defaultCount,
+        displayMode,
+        globalCount: feedCountsState.globalCount || feedCountsState.defaultCount,
+      };
     
       const res = await fetch("/api/fetch-news", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          selectedFeeds, 
-          feedStoryCounts: feedCountsState.feedCounts,
-          defaultCount: feedCountsState.defaultCount,
-          displayMode,
-        }),
+        body: JSON.stringify(payload),
       });
     
       const data = await res.json();
@@ -56,7 +87,9 @@ export default function FeedForm({
     
       if (data.articles && data.articles.length > 50) {
         setLoading(false);
-        alert("You have passed the limit of the number of stories you can generate! Please try again with less than 50");
+        alert(
+          "You have passed the limit of the number of stories you can generate! Please try again with less than 50"
+        );
         return;
       }
     
@@ -81,7 +114,6 @@ export default function FeedForm({
       }
     };
     
-  
     const groupedFeeds: Record<string, Feed[]> = {};
     if (Array.isArray(availableFeeds)) {
       availableFeeds.forEach((feed) => {
@@ -116,27 +148,39 @@ export default function FeedForm({
             />
           </div>
         )}
-        {Object.keys(groupedFeeds).map((categoryName) => {
-          const feedsInCategory = groupedFeeds[categoryName] || [];
-          const isAllSelected = feedsInCategory.every((feed) =>
-            selectedFeeds.includes(feed.link.toLowerCase())
-          );
-          return (
-            <FeedCategory
-              key={categoryName}
-              selectedFeeds={selectedFeeds}
-              setSelectedFeeds={setSelectedFeeds}
-              groupedFeeds={groupedFeeds}
-              categoryName={categoryName}
-              isAllSelected={isAllSelected}
-              feedsInCategory={feedsInCategory}
-              refreshFeeds={refreshFeeds}
-              state={feedCountsState}
-              collapse={collapseCategories}
-            />
-          );
-        })}
-         {selectedFeeds.length > 1 && (
+{Object.keys(groupedFeeds).map((categoryName) => {
+  const feedsInCategory = groupedFeeds[categoryName] || [];
+  const isAllSelected = feedsInCategory.every((feed) =>
+    selectedFeeds.includes(feed.link.toLowerCase())
+  );
+  return (
+    <FeedCategory
+      key={categoryName}
+      selectedFeeds={selectedFeeds}
+      setSelectedFeeds={setSelectedFeeds}
+      groupedFeeds={groupedFeeds}
+      categoryName={categoryName}
+      isAllSelected={isAllSelected}
+      feedsInCategory={feedsInCategory}
+      refreshFeeds={refreshFeeds}
+      state={feedCountsState}
+      collapse={collapseCategories}
+    />
+  );
+})}
+<details className="mb-4">
+  <summary className="cursor-pointer text-xl font-bold mb-2">
+    PERSONAL <span className="text-sm font-normal text-gray-500 ml-2">Paste your own RSS feed</span>
+  </summary>
+  <UrlForm 
+    url={urlInput} 
+    setUrl={setUrlInput} 
+    articleCount={currentUrlCount} 
+    setArticleCount={updateUrlCount}
+  />
+</details>
+
+        {(selectedFeeds.length + (urlInput.trim() !== "" ? 1 : 0)) > 1 && (
           <Transition
             enter="transition-opacity duration-700"
             enterFrom="opacity-0"
@@ -145,24 +189,24 @@ export default function FeedForm({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-          <div className="p-4 border rounded shadow-lg mb-4">
-          <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
-          <GlobalFeedCounter />
-          </div>
+            <div className="p-4 border rounded shadow-lg mb-4">
+              <SelectDisplayTypeRadio displayMode={displayMode} setDisplayMode={setDisplayMode} />
+              <GlobalFeedCounter />
+            </div>
           </Transition>
         )}
         <div className="flex space-x-4 mb-4">
         <button
             type="submit"
             onClick={handleSubmit}
-            disabled={loading || selectedFeeds.length === 0}
+            disabled={loading || (selectedFeeds.length === 0 && urlInput.trim() === "")}
             className={`inline-block px-4 py-2 border border-gray-500 text-sm rounded ${
-              loading || selectedFeeds.length === 0
+              loading || (selectedFeeds.length === 0 && urlInput.trim() === "")
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-gray-100"
             }`}
           >
-        {loading ? "Loading..." : "Generate News Articles"}
+            {loading ? "Loading..." : "Generate News Articles"}
         </button>
                   <button
                   type="button"

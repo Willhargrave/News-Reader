@@ -6,7 +6,7 @@ import Head from "next/head";
 import Header from "../components/items/Header";
 import FeedForm from "../components/form/FeedForm";
 import ArticleList from "../components/article/ArticleList";
-import SiteExplanation from "@/components/explenation/SiteExplanation";
+import SiteExplanation from "@/components/explanation/SiteExplanation";
 import { useSession } from "next-auth/react";
 import feedsData from "../data/feeds.json";
 import { Article, Feed } from "@/types";
