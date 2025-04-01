@@ -31,6 +31,7 @@ export type FeedFormProps = {
     refreshFeeds: () => void;
     loading: boolean;
     linksVisible: boolean;
+    feedLoading: boolean;
   };
 
 export type AddFeedFormProps = {

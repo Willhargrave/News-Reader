@@ -15,12 +15,9 @@ export default function FeedItem({
     const [confirmDelete, setConfirmDelete] = useState(false);
     const {dispatch, getCountForFeed, state} = useFeedCountsContext();
     const currentCount = getCountForFeed(feed.link.toLowerCase());
+    const [deleting, setDeleting] = useState(false);
+
     
-    
-   
-
-
-
     const handleRemoveFeed = async (feedId: string, feedLink: string) => {
       const res = await fetch("/api/user-feeds", {
         method: "DELETE",
@@ -49,17 +46,20 @@ export default function FeedItem({
           }
        };
       
-      const onRemoveClick = () => {
+       const onRemoveClick = async () => {
         if (confirmDelete) {
-          handleRemoveFeed(feed.id!, feed.link);
+          setDeleting(true);
+          await handleRemoveFeed(feed.id!, feed.link);
           setConfirmDelete(false);
+          setTimeout(() => {
+            refreshFeeds();
+            setDeleting(false);
+          }, 2000);
         } else {
           setConfirmDelete(true);
           setTimeout(() => setConfirmDelete(false), 3000);
         }
       };
-    
-    
     return (
         <div key={feed.link} className="flex items-center space-x-2 mb-1">
         <label className="flex items-center font-bold space-x-1 mb-2">
@@ -73,18 +73,18 @@ export default function FeedItem({
         <span className="cursor-default">{feed.title}</span>
         </label>
         {session && feed.id && (
-          <button
-          type="button"
-          onClick={onRemoveClick}
-          className={`text-sm ml-2 border rounded px-2 py-1 ${
-            confirmDelete
-              ? "bg-red-800 text-white"
-              : "bg-transparent text-red-500 hover:bg-red-100"
-          }`}
-        >
-          {confirmDelete ? "Confirm Delete" : "Remove"}
-        </button>
-        )}
+      <button
+        type="button"
+        onClick={onRemoveClick}
+        className={`text-sm ml-2 border rounded px-2 py-1 ${
+          confirmDelete
+            ? "bg-red-800 text-white"
+            : "bg-transparent text-red-500 hover:bg-red-100"
+        }`}
+      >
+        {deleting ? "Deleting..." : confirmDelete ? "Confirm Delete" : "Remove"}
+      </button>
+    )}
        {selectedFeeds.includes(feed.link) && (
             <Transition
                       enter="transition-all duration-700"

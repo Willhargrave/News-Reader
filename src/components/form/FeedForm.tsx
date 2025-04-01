@@ -23,6 +23,7 @@ export default function FeedForm({
   toggleLinks,
   linksVisible,
   loading,
+  feedLoading
 }: FeedFormProps) {
     const [showAddFeedForm, setShowAddFeedForm] = useState(false);
     const [displayMode, setDisplayMode] = useState<'grouped' | 'interleaved'>('grouped');
@@ -33,9 +34,7 @@ export default function FeedForm({
     const urlFeedKey = urlInput.trim().toLowerCase();
     const currentUrlCount = urlInput.trim() !== "" 
       ? getCountForFeed(urlFeedKey)
-      : feedCountsState.defaultCount; // fallback default if no URL is entered
-
-    // Function to update the count for the URL feed:
+      : feedCountsState.defaultCount; 
     const updateUrlCount = (newVal: number) => {
       if (urlInput.trim() !== "") {
         dispatch({
@@ -148,27 +147,34 @@ export default function FeedForm({
             />
           </div>
         )}
-{Object.keys(groupedFeeds).map((categoryName) => {
-  const feedsInCategory = groupedFeeds[categoryName] || [];
-  const isAllSelected = feedsInCategory.every((feed) =>
-    selectedFeeds.includes(feed.link.toLowerCase())
-  );
-  return (
-    <FeedCategory
-      key={categoryName}
-      selectedFeeds={selectedFeeds}
-      setSelectedFeeds={setSelectedFeeds}
-      groupedFeeds={groupedFeeds}
-      categoryName={categoryName}
-      isAllSelected={isAllSelected}
-      feedsInCategory={feedsInCategory}
-      refreshFeeds={refreshFeeds}
-      state={feedCountsState}
-      collapse={collapseCategories}
-    />
-  );
-})}
-<details className="mb-4">
+{feedLoading ? (
+  <div className="flex flex-col justify-center items-center py-10">
+    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+    <span className="mt-4 text-gray-500">Loading feeds...</span>
+  </div>
+) : (
+  Object.keys(groupedFeeds).map((categoryName) => {
+    const feedsInCategory = groupedFeeds[categoryName] || [];
+    const isAllSelected = feedsInCategory.every((feed) =>
+      selectedFeeds.includes(feed.link.toLowerCase())
+    );
+    return (
+      <FeedCategory
+        key={categoryName}
+        selectedFeeds={selectedFeeds}
+        setSelectedFeeds={setSelectedFeeds}
+        groupedFeeds={groupedFeeds}
+        categoryName={categoryName}
+        isAllSelected={isAllSelected}
+        feedsInCategory={feedsInCategory}
+        refreshFeeds={refreshFeeds}
+        state={feedCountsState}
+        collapse={collapseCategories}
+      />
+    );
+  })
+)}
+{!feedLoading  && (<details className="mb-4">
   <summary className="cursor-pointer text-xl font-bold mb-2">
     PERSONAL <span className="text-sm font-normal text-gray-500 ml-2">Paste your own RSS feed</span>
   </summary>
@@ -178,7 +184,8 @@ export default function FeedForm({
     articleCount={currentUrlCount} 
     setArticleCount={updateUrlCount}
   />
-</details>
+</details>)}
+
 
         {(selectedFeeds.length + (urlInput.trim() !== "" ? 1 : 0)) > 1 && (
           <Transition

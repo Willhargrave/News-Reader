@@ -24,6 +24,8 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(false);
   const [feedLoading, setFeedLoading] = useState<boolean>(false)
   const [linksVisible, setLinksVisible] = useState(false);
+  // const [hasLoadedFeeds, setHasLoadedFeeds] = useState(false);
+
    
 
   useEffect(() => {
@@ -40,7 +42,6 @@ export default function Home() {
       return newValue;
     });
   };
-
 
   const refreshFeeds = useCallback(async () => {
     setFeedLoading(true);
@@ -68,10 +69,10 @@ export default function Home() {
     }
   }, [session]);
   
-
   useEffect(() => {
     refreshFeeds();
   }, [refreshFeeds]);
+  
 
   useEffect(() => {
     async function fetchSettings() {
@@ -108,11 +109,6 @@ export default function Home() {
             <Header/>
             <SiteExplanation />
             <div className="p-6 lg:p-12">
-            {feedLoading ? (
-            <div className="flex justify-center items-center py-10">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-          ) : (
             <FeedForm
               availableFeeds={availableFeeds}
               setAvailableFeeds={setAvailableFeeds}
@@ -124,8 +120,8 @@ export default function Home() {
               loading={loading}
               refreshFeeds={refreshFeeds}
               linksVisible={linksVisible}
-            />
-          )}
+              feedLoading={feedLoading}
+            />       
             <ArticleList articles={articles} linksVisible={linksVisible} loading={loading} />
           </div>
           </div>

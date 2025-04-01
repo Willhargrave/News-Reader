@@ -6,8 +6,9 @@ import ArticleItem from "./ArticleItem";
 export default function ArticleList({ articles, linksVisible, loading }: ArticleListProps) {
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-10">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex flex-col justify-center items-center py-10">
+      <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      <span className="mt-4 text-gray-500">Loading News...</span>
       </div>
     );
   }
